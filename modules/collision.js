@@ -4,7 +4,7 @@ import { camera, CAMERA_BASE_HEIGHT, arenaSize, scene } from './game.js';
 import * as MOVE from './move.js';
 import { die, damage, heal } from './gameplay.js';
 
-const PUSH_DISTANCE = 0.5;
+const PUSH_DISTANCE = 0.2;
 const OUT_OF_BOUNDS_WARNING_TIME = 20000;
 let showOutOfBoundsWarning = true;
 
@@ -84,10 +84,19 @@ class CollidableInfo {
 
 const collidables = []; // azon objektumok (CollidableInfo) listája, amikkel lehet ütközni
 
-export function registerCollidableObject(mesh, type, removeOnCollision = false) { //hozzáadja az objektumot az ütközés detektáláshoz
+//hozzáadja az objektumot az ütközés detektáláshoz
+export function registerCollidableObject(mesh, type, removeOnCollision = false) {
     const boundingBox = new THREE.Box3().setFromObject(mesh);
     const collidableInfo = new CollidableInfo(boundingBox, type, mesh.id, removeOnCollision);
     collidables.push(collidableInfo);
+}
+
+//újraszámolja az objektum befoglaló  dobozát. Ezt mindig meg kell hívni ha az objektum pozícióját, méretét változtatjuk
+export function updateCollidableBounds(mesh) { 
+    const boundingBox = new THREE.Box3().setFromObject(mesh);
+    for(const c of collidables) {
+        if(c.collidableId == mesh.id) c.boundingBox = boundingBox;
+    } 
 }
 
 function unregisterCollidableObject(collidableId) { //eltávolítja az objektumot az ütközés detektálásból
@@ -149,10 +158,25 @@ export function gravity(cameraBounds) {
     for(const c of collidables) {
         if(extendedCameraBounds.intersectsBox(c.boundingBox)) { //van valami alatta
             c.handleCollisionType(); //alatta lévő objektum típusától függő esemény
+            c.handleRemoval(); //ha el kell távolítani
             collidableUnder = true;
+            handleFallEnding();
         }
     }
     if(!MOVE.jumping && camera.position.y > CAMERA_BASE_HEIGHT && !collidableUnder) {
         camera.position.y -= MOVE.JUMP_SPEED;
+        fallDistance += MOVE.JUMP_SPEED;
+    } else if(camera.position.y <= CAMERA_BASE_HEIGHT) {
+       handleFallEnding();
     }
+}
+
+let fallDistance = 0; //méri hogy milyen távolságot 'zuhant' a játékos
+const MIN_DAMAGE_DISTANCE = 100; //ekkor zuhanás alatt nincs sebződés
+
+function handleFallEnding() { //meghívódik ha befejeződik a játékos zuhanása
+    if(fallDistance >= MIN_DAMAGE_DISTANCE) { //esési sebzés
+        damage(5*fallDistance, 'Túl magasról estél le!')
+    }
+    fallDistance = 0;
 }
