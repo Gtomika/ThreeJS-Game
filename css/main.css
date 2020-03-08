@@ -2,35 +2,50 @@ body {
     margin: 0;
     height: 100%;
     width: 100%;
+    position: absolute;
 }
 
 canvas { 
     display: block;
 }
 
-#canvasContainer {
+#canvasDisplayer {
+    margin: 0;
+    height: 100%;
     width: 100%;
-    height: 92%;
-    align-self: top;
-}
-
-#userInterface {
-    width: 100%;
-    height: 8%;
-    align-self: bottom;
-    background-color: gray;
+    display: block;
+    position: absolute;
 }
 
 #hpDisplayer {
     align-content: center;
     position: absolute;
-    margin: 800px;
     margin-left: 20px;
+    bottom: 50px;
     width: 400px;
     height: 50px;
     z-index: 100;
     border-radius: 20px;
     border: black;
+    border-width: 5px;
+}
+
+#coinCounter {
+    align-content: center;
+    position: absolute;
+    margin-right: 20px;
+    bottom: 50px;
+    right: 20px;
+    width: 300px;
+    height: 50px;
+    z-index: 100;
+    border-radius: 20px;
+    border: yellow;
+    background-color: black;
+    color: yellow;
+    font-size: xx-large;
+    text-align: center;
+    line-height: 50px;
     border-width: 5px;
 }
 
@@ -61,4 +76,4 @@ canvas {
     height: 150px;
     z-index: 100;
     background-color: cornflowerblue;
-}​
+}

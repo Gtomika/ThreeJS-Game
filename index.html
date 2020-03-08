@@ -5,13 +5,15 @@
     <meta http-equiv="x-ua-compatible" content="ie=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>ThreeJS Move</title>
+    <title>ThreeJS Game</title>
 
     <link rel="stylesheet" href="css/main.css" />
     <link rel="icon" href="images/favicon.png" />
   </head>
 
   <body>
+    <div id="canvasContainer"></div> 
+
     <div id="debugInfo"> <!-- Itt jelenik meg a pozíció és irány -->
       <div style="display:inline;"><span style="font-size: larger;">Pozíció: </span><span id="position"></span></div>
       <br>
@@ -27,8 +29,9 @@
         <br><br>
         Sprint: SHIFT
     </div>
-
+  
     <div id="hpDisplayer"></div> <!-- Életpont sáv ebbe jön -->
+    <div id="coinCounter"></div> <!-- Megszerzett érmeék számát mutatja -->
 
     <script type="text/javascript" src="js/stats.min.js"></script>
     <script type="text/javascript" src="js/three.js"></script>

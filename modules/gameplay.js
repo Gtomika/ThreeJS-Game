@@ -1,6 +1,7 @@
 //Játékmenettel kapcsolatos komponensek
 
 import { camera, CAMERA_BASE_HEIGHT } from './game.js';
+import { maximumCoins } from './world_building.js';
 
 const MAX_HP = 1000; 
 
@@ -47,7 +48,6 @@ export function die(deathMessage = 'Meghaltál') { //visszahelyezi a játékost 
     camera.position.set(0, CAMERA_BASE_HEIGHT, 0);
     healthPoints = MAX_HP;
     setHealthBar(healthPoints);
-    console.log(healthPoints)
 }
 
 function setHealthBar(healthPoints) { //új értéket állít be a HP sávnak
@@ -66,4 +66,13 @@ function setHealthBar(healthPoints) { //új értéket állít be a HP sávnak
     );
 }
 
+let foundCoins = 0; //számolja hogy mennyi érmét talált már meg a játékos
+
+export function coinFound() { //meghívódik ha a játékos felvesz egy érmét
+    foundCoins++;
+    document.getElementById('coinCounter').textContent = 'Érmék: ' + foundCoins + '/' + maximumCoins;
+    if(foundCoins == maximumCoins) { //győzelem
+        window.setTimeout(() => alert('Megtaláltad az összes érmét!'), 500);
+    }
+}
 

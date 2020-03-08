@@ -2,7 +2,7 @@
 
 import { camera, CAMERA_BASE_HEIGHT, arenaSize, scene } from './game.js';
 import * as MOVE from './move.js';
-import { die, damage, heal } from './gameplay.js';
+import { die, damage, heal, coinFound } from './gameplay.js';
 
 const PUSH_DISTANCE = 0.2;
 const OUT_OF_BOUNDS_WARNING_TIME = 20000;
@@ -46,6 +46,9 @@ class CollidableInfo {
         this.boundingBox = boundingBox;
         this.type = type;
         this.removeOnCollision = removeOnCollision; //ha true, akkor az ütközés törli ezt az objektumot
+        if(type === TYPE_POINT) {
+            this.removeOnCollision = true; //pontok mindig eltűnnek ha felszedik őket
+        }
         this.collidableId = id;
     }
 
@@ -58,7 +61,7 @@ class CollidableInfo {
             return true;
         }
         if(this.type === TYPE_POINT) { //pontszerzés történt
-
+            coinFound();
             return false;
         }
         if(this.type.startsWith('damage')) { //ütközés sebző objektummal
@@ -179,4 +182,13 @@ function handleFallEnding() { //meghívódik ha befejeződik a játékos zuhaná
         damage(5*fallDistance, 'Túl magasról estél le!')
     }
     fallDistance = 0;
+}
+
+//láthatatlan objektum ütközés detektáláshoz
+export function createInvisibleBounds(position, boundsSize) { 
+    const material = new THREE.MeshBasicMaterial();
+    material.transparent = true;
+    const boundMesh = new THREE.Mesh(new THREE.BoxGeometry(boundsSize[0], boundsSize[1], boundsSize[2]), material);
+    boundMesh.position.set(position[0], position[1], position[2]);
+    return boundMesh;
 }

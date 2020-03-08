@@ -4,6 +4,7 @@ import * as MOVE from './move.js';
 import * as COLLISION from './collision.js'
 import * as WORLD_BUILDING from './world_building.js';
 import * as GAMEPLAY from './gameplay.js';
+import {updateCoinRotationAngles} from './shaders.js';
 
 let stats;
 export let renderer;
@@ -30,7 +31,7 @@ function initScene() {
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight); //nem teljes magasság
     renderer.outputEncoding = THREE.sRGBEncoding;
-    document.body.appendChild(renderer.domElement);
+    document.getElementById('canvasContainer').appendChild(renderer.domElement);
     //const axes = new THREE.AxesHelper(100); //3D segítő
     //scene.add(axes);
 
@@ -65,6 +66,7 @@ function initScene() {
 
     WORLD_BUILDING.addObjects(); //a térbeli objektumok hozzáadása 
     WORLD_BUILDING.addModels(); //textúrázott 3D modellek hozzáadása
+    WORLD_BUILDING.addCoins(); //gyűjtendő érmék hozzáadása a színtérhez
 
     GAMEPLAY.initiateUserInterface(); //hp bar, stb...
     addStats();
@@ -125,6 +127,10 @@ const render = function() { //renderelő metódus
     }
     //gravitáció szimulálása
     COLLISION.gravity(cameraBounds);
+
+    //az 'érmék' forgatása
+    updateCoinRotationAngles();
+
     requestAnimationFrame(render);
     renderer.render(scene, camera); 
 }
