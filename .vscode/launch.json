@@ -6,11 +6,11 @@
     "configurations": [
 
         {
-            "name": "Launch index.html",
+            "name": "Debug project",
             "type": "firefox",
             "request": "launch",
             "reAttach": true,
-            "file": "${workspaceFolder}/index.html"
+            "file": "${workspaceFolder}/GasparTamas.html"
         }
     ]
 }

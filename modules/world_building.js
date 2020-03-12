@@ -58,8 +58,9 @@ export function addModels() { //3d modellek betöltése, pozícionálása és a 
     gltfLoader = new THREE.GLTFLoader();
     roughnessMipmapper = new RoughnessMipmapper(renderer);
 
-    loadModel('models/car_rusty/scene.gltf', 0.7, [200, 0, 50], {boundsSize: [20,20,50], type: TYPE_NORMAL}); 
-    loadModel('models/gaz_24/scene.gltf', 0.7, [350, 0, 120], {boundsSize: [20,20,50], type: TYPE_NORMAL});
+    loadModel('models/car_rusty/scene.gltf', 0.7, [-240, 0, 168], {boundsSize: [20,20,50], type: TYPE_NORMAL}); 
+    loadModel('models/old_truck/scene.gltf', 1.75, [-270, 15, 270], {boundsSize: [20, 30,50], type: TYPE_NORMAL});
+    loadModel('models/mi_24_heli/scene.gltf', 0.8, [-75, 20, 360], {boundsSize: [90,30,30], type: TYPE_NORMAL});
 
     roughnessMipmapper.dispose();
 }
@@ -90,6 +91,12 @@ export let maximumCoins = 0; //a megtalálható maximális mennyíségű érme. 
 export function addCoins() { //hozzáadja a gyűjtendő érméket
     createCoinHelperText();
     createCoin([30,10,-60]); //bemutató érme a felirat mellett
+    createCoin([-295,10,270]); //old truck modell mögött
+    createCoin([-240,25,160]); //rusty car modell tetején
+    createCoin([-132,10,380]); //helikopter mögött
+    createCoin([-75,10,380]); //helikopter mögött
+
+    createCoin([70,50,20]); //barna lapon 
 
     document.getElementById('coinCounter').textContent = 'Érmék: 0/' + maximumCoins; //számoló szöveg inicializálása 
 }

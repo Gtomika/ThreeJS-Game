@@ -4,6 +4,7 @@ import * as MOVE from './move.js';
 import * as COLLISION from './collision.js'
 import * as WORLD_BUILDING from './world_building.js';
 import * as GAMEPLAY from './gameplay.js';
+import * as SOUNDS from './sound.js';
 import {updateCoinRotationAngles} from './shaders.js';
 
 let stats;
@@ -11,6 +12,7 @@ export let renderer;
 export let scene;
 export let camera;
 export let controls;
+export let listener; //hangokhoz kell
 
 const cameraDir = new THREE.Vector3(); //hogy 'THREE.Camera: .getWorldDirection() target is now required' warning eltűnjön
 export const CAMERA_BASE_HEIGHT = 15; //ezen a magasságon van a kamera alapértelmezetten 
@@ -26,6 +28,8 @@ function initScene() {
     scene = new THREE.Scene(); 
     camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
     camera.position.set(0,CAMERA_BASE_HEIGHT,0);
+    listener = new THREE.AudioListener();
+    camera.add(listener);
     
     //renderer létrehozása
     renderer = new THREE.WebGLRenderer({antialias: true});
@@ -55,11 +59,7 @@ function initScene() {
         controls.lock();
         instructions.hidden = true;
     }, false );
-    controls.addEventListener('unlock',function() { //pointer lock kikapcsolás
-        document.getElementById('spanAction').textContent = "FOLYTATÁSHOZ";
-        instructions.hidden = false;
-        MOVE.stopMovement();
-    });
+    controls.addEventListener('unlock', pointerLockUnlocked); //pointer lock kikapcsolás kezelése
     
     window.addEventListener('keydown', MOVE.keyDownHandler); //billentyűzetkezelés hozzáadása
     window.addEventListener('keyup', MOVE.keyUpHandler);
@@ -69,14 +69,22 @@ function initScene() {
     WORLD_BUILDING.addCoins(); //gyűjtendő érmék hozzáadása a színtérhez
 
     GAMEPLAY.initiateUserInterface(); //hp bar, stb...
+    SOUNDS.loadSounds(); //hangok betöltése
     addStats();
     render(); //renderelés
+}
+
+export function pointerLockUnlocked() { //meghívódik ha pointer lock irányítást kikapcsolják
+    const instructions = document.getElementById('instructions');
+    document.getElementById('spanAction').textContent = "FOLYTATÁSHOZ";
+    instructions.hidden = false;
+    MOVE.stopMovement();
 }
 
 function createBasicEnvironment() {  //hozzáadja a talajt és a skyboxot
     const loader = new THREE.CubeTextureLoader();
     loader.setPath('img/');
-    const skyboxGeometry = loader.load([ //KÉSZÍTŐ: 'Jockum Skoglund aka hipshot'
+    const skyboxGeometry = loader.load([ 
         'miramar_lf.png','miramar_rt.png', //x irány
         'miramar_up.png','miramar_dn.png', //y irány
         'miramar_ft.png','miramar_bk.png'] //z irány

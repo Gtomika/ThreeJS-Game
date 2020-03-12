@@ -58,7 +58,7 @@ class CollidableInfo {
         if(this.type === TYPE_NORMAL) return true; //nem kell semmit tenni
         if(this.type === TYPE_LETHAL) {
             die();
-            return true;
+            return false;
         }
         if(this.type === TYPE_POINT) { //pontszerzés történt
             coinFound();
@@ -167,6 +167,7 @@ export function gravity(cameraBounds) {
         }
     }
     if(!MOVE.jumping && camera.position.y > CAMERA_BASE_HEIGHT && !collidableUnder) {
+        MOVE.setFalling(true);
         camera.position.y -= MOVE.JUMP_SPEED;
         fallDistance += MOVE.JUMP_SPEED;
     } else if(camera.position.y <= CAMERA_BASE_HEIGHT) {
@@ -178,6 +179,7 @@ let fallDistance = 0; //méri hogy milyen távolságot 'zuhant' a játékos
 const MIN_DAMAGE_DISTANCE = 100; //ekkor zuhanás alatt nincs sebződés
 
 function handleFallEnding() { //meghívódik ha befejeződik a játékos zuhanása
+    MOVE.setFalling(false);
     if(fallDistance >= MIN_DAMAGE_DISTANCE) { //esési sebzés
         damage(5*fallDistance, 'Túl magasról estél le!')
     }
