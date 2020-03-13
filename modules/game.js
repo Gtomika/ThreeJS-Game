@@ -22,11 +22,19 @@ const posDisplayer = document.getElementById("position");
 const dirDisplayer = document.getElementById("direction");
 
 export const arenaSize = 1000; //a bejárható terület mérete
+const CAMERA_FAR = 1000; //eddig lát a kamera és eddig tart a köd hatása
+
+//ezek a konstansok a shaderkbe kellenek
+export const SUN_POSITION = new THREE.Vector3(arenaSize,500,arenaSize*0.75);
+export const AMBIENT_LIGHT_INTENSITY = 0.05; 
+export const SUN_LIGHT_INTENSITY = 0.8;
 
 function initScene() {
     // scene és camera
     scene = new THREE.Scene(); 
-    camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+    scene.fog = new THREE.Fog(0xD3D3D3, 1, CAMERA_FAR) //szürke, lineáris köd
+
+    camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, CAMERA_FAR);
     camera.position.set(0,CAMERA_BASE_HEIGHT,0);
     listener = new THREE.AudioListener();
     camera.add(listener);
@@ -42,12 +50,12 @@ function initScene() {
     createBasicEnvironment(); //skybox, talaj
     
     //alacsony intenzitású háttérfény
-    const ambientLight = new THREE.AmbientLight(0xffffff,0.05);
+    const ambientLight = new THREE.AmbientLight(0xffffff, AMBIENT_LIGHT_INTENSITY);
     scene.add(ambientLight);
 
     //napfény szimulálása
-    const sunLight = new THREE.DirectionalLight(0xffffff, 0.5);
-    sunLight.position.set(500,200,500); //0,0,0-ba néz
+    const sunLight = new THREE.DirectionalLight(0xffffff, SUN_LIGHT_INTENSITY);
+    sunLight.position.set(SUN_POSITION.x, SUN_POSITION.y, SUN_POSITION.z); //0,0,0-ba néz
     scene.add(sunLight);
 
     posDisplayer.textContent = vecToString(camera.position); //kezdeti pozíció, irány
@@ -96,10 +104,10 @@ function createBasicEnvironment() {  //hozzáadja a talajt és a skyboxot
      const floorTexture = textureLoader.load('img/Ground.jpg');
      floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
      floorTexture.repeat.set(10,10);
-     const floorMaterial = new THREE.MeshPhongMaterial({ map: floorTexture, side: THREE.DoubleSide });
+     const floorMaterial = new THREE.MeshLambertMaterial({ map: floorTexture, side: THREE.SingleSide });
      const floorGeometry = new THREE.PlaneGeometry(arenaSize, arenaSize, 1, 1);
      const floor = new THREE.Mesh(floorGeometry, floorMaterial);
-     floor.rotation.x = Math.PI / 2;
+     floor.rotation.x = - Math.PI / 2;
      scene.add(floor);
 }
 

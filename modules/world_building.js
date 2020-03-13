@@ -2,22 +2,35 @@
 
 //import * as THREE from './three.module.js';
 import { registerCollidableObject, TYPE_NORMAL, TYPE_LETHAL, TYPE_POINT, createInvisibleBounds } from './collision.js';
-import { scene, renderer } from './game.js';
+import { scene, renderer, SUN_POSITION, SUN_LIGHT_INTENSITY, AMBIENT_LIGHT_INTENSITY } from './game.js';
 import { RoughnessMipmapper } from './RoughnessMipmapper.js';
 import * as SHADERS from './shaders.js';
 
 export function addObjects() {
-    const cube = new  THREE.Mesh(new THREE.BoxGeometry(20,20,20), new THREE.MeshPhongMaterial({color: 0x00ff00}));
-    cube.position.set(30,10,0);
-    registerCollidableObject(cube, TYPE_NORMAL);
-    scene.add(cube);
+    createBox([30,10,0],[20,20,20]);
+    createBox([70,35,20],[40,10,20]);
+    createSpikeField([100,0,20], 40, 20);
 
-    const cuboid = new THREE.Mesh(new THREE.BoxGeometry(40,10,20), new THREE.MeshPhongMaterial({color: 0xE2732B}));
-    cuboid.position.set(70, 35, 20);
-    registerCollidableObject(cuboid, TYPE_NORMAL);
-    scene.add(cuboid);
+    
+}
 
-    createSpikeField([125,0,20], 40, 40);
+//létrehoz egy téglatestet a megadott pozíción, a megadott mérettel és színnek.
+//A szín opcionális, ha nincs megadva, akkor véletlen lesz.
+//Az eredmény hozzáadódik az ütközés detektáláshoz és a színtérhez is.
+function createBox(position, bounds, color) {
+    let appliedColor = 0x000000;
+    if(color === undefined) {
+        appliedColor = Math.round(0xffffff * Math.random());
+    } else {
+        appliedColor = color;
+    }
+    const mesh = new THREE.Mesh(
+        new THREE.BoxGeometry(bounds[0], bounds[1], bounds[2]),
+        new THREE.MeshLambertMaterial({color: appliedColor})
+    );
+    mesh.position.set(position[0], position[1], position[2]);
+    registerCollidableObject(mesh, TYPE_NORMAL);
+    scene.add(mesh);
 }
 
 const SPIKE_RADIUS = 2;
@@ -103,9 +116,11 @@ export function addCoins() { //hozzáadja a gyűjtendő érméket
 
 function createCoin(position) { //létrehoz egy forgó, felszedhető érmét
     const coinUniforms = { 
-        angle: { type: 'float', value: 0.0 }
+        angle: { type: 'float', value: 0.0 }, //ez majd változtatva lesz
+        ambientLightIntensity: { type: 'float', value: AMBIENT_LIGHT_INTENSITY},
+        sunPosition: { type: 'vec3', value: SUN_POSITION },
+        sunLightIntensity: { type: 'float', value: SUN_LIGHT_INTENSITY }
     }
-    SHADERS.COIN_ANGLE_UNIFORMS.push(coinUniforms.angle); //később ez lesz frissítve
     const coinMaterial = new THREE.ShaderMaterial({
         uniforms: coinUniforms,
         wireframe: false,
@@ -114,6 +129,7 @@ function createCoin(position) { //létrehoz egy forgó, felszedhető érmét
         fragmentShader: SHADERS.coinFragmentShader()
     });
     const coinGeometry = new THREE.TorusGeometry(5, 2, 8, 30);
+    SHADERS.saveCoinData(coinUniforms.angle, coinGeometry); //ezeket később frissíteni kell
     const coinMesh = new THREE.Mesh(coinGeometry, coinMaterial);
     coinMesh.position.set(position[0], position[1], position[2]);
     registerCollidableObject(coinMesh, TYPE_POINT, true); //ütközéskor el lesz távolítva

@@ -18,7 +18,7 @@ export function loadSounds() { //inicializáláskor kell meghívni, betölti a h
     const audioLoader = new THREE.AudioLoader();
     audioLoader.load('sounds/coin.wav', function( buffer ) {
         coinSound.setBuffer( buffer );
-        coinSound.setVolume(0.4)
+        coinSound.setVolume(0.2)
     });
     audioLoader.load('sounds/walk.wav', function( buffer ) {
         walkSound.setBuffer( buffer );
@@ -26,7 +26,7 @@ export function loadSounds() { //inicializáláskor kell meghívni, betölti a h
     });
     audioLoader.load('sounds/run.wav', function( buffer ) {
         runSound.setBuffer( buffer );
-        runSound.setVolume(0.2);
+        runSound.setVolume(0.3);
     });
     audioLoader.load('sounds/jump.wav', function( buffer ) {
         jumpSound.setBuffer( buffer );

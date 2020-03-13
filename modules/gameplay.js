@@ -84,6 +84,7 @@ function respawn() {
     setHealthBar(healthPoints);
     controls.removeEventListener('unlock', deathPointerLockUnlocked);
     controls.addEventListener('unlock', pointerLockUnlocked); //pointer lock normál működésének visszakapcsolása
+    SOUNDS.playHealSound();
 }
 
 function setHealthBar(healthPoints) { //új értéket állít be a HP sávnak
