@@ -47,7 +47,7 @@ export function coinFragmentShader() {
 		float diffuseLight = max(dot(L, nNormal), 0.0);
 		vec3 diffuse = lightColor * diffuseLight * sunLightIntensity * coinColor;
 
-		gl_FragColor.xyz = ambient + diffuse;
+		gl_FragColor.xyz = ambient + diffuse; //végső szín
 		gl_FragColor.w = 1.0;
     }
     `;
@@ -57,7 +57,7 @@ const ROTATION_ANGLE_DELTA = Math.PI / 80.0; //radiánban
 
 const COIN_DATA = [];
 
-export function saveCoinData(angleUniform, coinGeometry) {
+export function saveCoinData(angleUniform, coinGeometry) { //meg kell hívni ha egy érmét hozunk létre
 	COIN_DATA.push([angleUniform, coinGeometry]);
 }
 

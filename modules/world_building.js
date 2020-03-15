@@ -2,35 +2,42 @@
 
 //import * as THREE from './three.module.js';
 import { registerCollidableObject, TYPE_NORMAL, TYPE_LETHAL, TYPE_POINT, createInvisibleBounds } from './collision.js';
-import { scene, renderer, SUN_POSITION, SUN_LIGHT_INTENSITY, AMBIENT_LIGHT_INTENSITY } from './game.js';
+import { scene, renderer, SUN_POSITION, SUN_LIGHT_INTENSITY, AMBIENT_LIGHT_INTENSITY} from './game.js';
 import { RoughnessMipmapper } from './RoughnessMipmapper.js';
+import { createAnimatedBox } from './animation.js';
 import * as SHADERS from './shaders.js';
 
 export function addObjects() {
-    createBox([30,10,0],[20,20,20]);
+    createBox([30,10,0],[20,20,20]); //kezdő pozíció melletti 'pálya'
     createBox([70,35,20],[40,10,20]);
     createSpikeField([100,0,20], 40, 20);
-
-    
+    createBox([130,40,15],[20,10,20]);
+    createBox([150,65,-12],[20,10,20]);
+    createBox([140,80,-90],[30,10,100]); //efelett megy az animált akadály, alatt spike field
+    createAnimatedBox([180,100,-90],[10,30,30], 'X', [180,100], 2000);
+    createSpikeField([140,0,-90],150,60);
 }
 
 //létrehoz egy téglatestet a megadott pozíción, a megadott mérettel és színnek.
 //A szín opcionális, ha nincs megadva, akkor véletlen lesz.
 //Az eredmény hozzáadódik az ütközés detektáláshoz és a színtérhez is.
-function createBox(position, bounds, color) {
-    let appliedColor = 0x000000;
-    if(color === undefined) {
-        appliedColor = Math.round(0xffffff * Math.random());
-    } else {
+export function createBox(position, bounds, collisionType, color) {
+    let appliedColor = Math.round(0xffffff * Math.random());
+    let colType = TYPE_NORMAL;
+    if(color !== undefined) {
         appliedColor = color;
+    } 
+    if(collisionType !== undefined) {
+        colType = collisionType;
     }
     const mesh = new THREE.Mesh(
         new THREE.BoxGeometry(bounds[0], bounds[1], bounds[2]),
         new THREE.MeshLambertMaterial({color: appliedColor})
     );
     mesh.position.set(position[0], position[1], position[2]);
-    registerCollidableObject(mesh, TYPE_NORMAL);
+    registerCollidableObject(mesh, colType);
     scene.add(mesh);
+    return mesh; //alapesetben erre nincs szükség
 }
 
 const SPIKE_RADIUS = 2;
@@ -104,12 +111,18 @@ export let maximumCoins = 0; //a megtalálható maximális mennyíségű érme. 
 export function addCoins() { //hozzáadja a gyűjtendő érméket
     createCoinHelperText();
     createCoin([30,10,-60]); //bemutató érme a felirat mellett
+
+    createCoin([30,30,0]); //kezőpozíció melletti 'pálya' érméi
+    createCoin([70,50,20]);
+    createCoin([130,55,15]);
+    createCoin([150,80,-12]);
+    createCoin([135,95,-60]);
+    createCoin([135,95,-125]);
+
     createCoin([-295,10,270]); //old truck modell mögött
     createCoin([-240,25,160]); //rusty car modell tetején
     createCoin([-132,10,380]); //helikopter mögött
     createCoin([-75,10,380]); //helikopter mögött
-
-    createCoin([70,50,20]); //barna lapon 
 
     document.getElementById('coinCounter').textContent = 'Érmék: 0/' + maximumCoins; //számoló szöveg inicializálása 
 }

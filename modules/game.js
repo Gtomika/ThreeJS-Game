@@ -120,7 +120,9 @@ function addStats() { //FPS statisztika doboz hozzáadása
 }
 
 const render = function() { //renderelő metódus
-    stats.update();
+    stats.update(); //FPS statisztika firssítése
+    TWEEN.update(); //tween animációk frissítése
+
     posDisplayer.textContent = vecToString(camera.position); //frissített pozíció
     dirDisplayer.textContent = vecToString(camera.getWorldDirection(cameraDir)); //frissített irány
 
@@ -147,11 +149,11 @@ const render = function() { //renderelő metódus
     //az 'érmék' forgatása
     updateCoinRotationAngles();
 
+    renderer.render(scene, camera);
     requestAnimationFrame(render);
-    renderer.render(scene, camera); 
 }
 
-function vecToString(vector) { //segéd metódus a pozíció, irány megjelenítéséhez
+export function vecToString(vector) { //segéd metódus a pozíció, irány megjelenítéséhez
     return "("+vector.x.toFixed(2)+", "+vector.y.toFixed(2)+", "+vector.z.toFixed(2)+")";
 }
 

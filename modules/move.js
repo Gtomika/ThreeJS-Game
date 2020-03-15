@@ -6,6 +6,7 @@ import { controls } from './game.js'
 export const SPEED = 0.2;
 export const SPRINT_SPEED = 0.5
 export const JUMP_SPEED = 1;
+export const FALL_SPEED = 1;
 export const JUMP_TIME = 500; //milli sec
 export let jumping = false; // van-e folyamatban ugrás
 export let sprinting = false; //aktív-e a sprintelés

@@ -64,7 +64,7 @@ function initMusicMuter() { // zene némító gomb beállítása
 }
 
 export function playJumpSound() {
-    jumpSound.play();
+    if(!jumpSound.isPlaying) jumpSound.play();
 }
 
 export function playCoinFoundSound() {

@@ -33,9 +33,10 @@ export function detectOutOfBounds() {
     } 
 }
 
-export const TYPE_NORMAL = 'normal';
-export const TYPE_LETHAL = 'lethal';
-export const TYPE_POINT = 'point';
+export const TYPE_NORMAL = 0;
+export const TYPE_LETHAL = 1;
+export const TYPE_POINT = 2;
+export const TYPE_MOVING = 3;
 //sebző/gyógyító objektumok típusa: damage/heal-x, ahol x a mennyiség
 
 //osztály az ütközés detektálásban lévő objektumoknak
@@ -59,17 +60,19 @@ class CollidableInfo {
         if(this.type === TYPE_LETHAL) {
             die();
             return false;
-        }
-        if(this.type === TYPE_POINT) { //pontszerzés történt
+        } else if(this.type === TYPE_MOVING) { //mozgó (animált) objektummal ütközés
+            const cameraBounds = createCameraBounds();
+            //nagyobb pushout távolság kell, különben a gyorsan mozgó objektumok 'átmennek' a játékoson
+            pushOut(cameraBounds, this.boundingBox, 10*PUSH_DISTANCE, PRIORITY_XZ); 
+            return false; //hogy a megívó függvény ne mozgassa újra a játékost
+        } else if(this.type === TYPE_POINT) { //pontszerzés történt
             coinFound();
             return false;
-        }
-        if(this.type.startsWith('damage')) { //ütközés sebző objektummal
+        } else if(this.type.startsWith('damage')) { //ütközés sebző objektummal
             const amount = this.type.split('-');
             damage(amount);
             return false;
-        }
-        if(this.type.startsWith('heal')) { //ütközés gyógyító objektummal
+        } else if(this.type.startsWith('heal')) { //ütközés gyógyító objektummal
             const amount = this.type.split('-');
             heal(amount);
             return false;
@@ -85,31 +88,26 @@ class CollidableInfo {
     }
 }
 
-const collidables = []; // azon objektumok (CollidableInfo) listája, amikkel lehet ütközni
+// azon objektumok (CollidableInfo), amikkel lehet ütközni
+//key: mesh id
+//value: CollidableInfo
+const collidables = new Map(); 
 
 //hozzáadja az objektumot az ütközés detektáláshoz
 export function registerCollidableObject(mesh, type, removeOnCollision = false) {
     const boundingBox = new THREE.Box3().setFromObject(mesh);
     const collidableInfo = new CollidableInfo(boundingBox, type, mesh.id, removeOnCollision);
-    collidables.push(collidableInfo);
+    collidables.set(mesh.id, collidableInfo);
 }
 
 //újraszámolja az objektum befoglaló  dobozát. Ezt mindig meg kell hívni ha az objektum pozícióját, méretét változtatjuk
 export function updateCollidableBounds(mesh) { 
     const boundingBox = new THREE.Box3().setFromObject(mesh);
-    for(const c of collidables) {
-        if(c.collidableId == mesh.id) c.boundingBox = boundingBox;
-    } 
+    collidables.get(mesh.id).boundingBox = boundingBox;
 }
 
 function unregisterCollidableObject(collidableId) { //eltávolítja az objektumot az ütközés detektálásból
-    let index = 0;
-    for(const c of collidables) {
-        if(c.collidableId == collidableId) { //ez az az objektum
-            collidables.splice(index, 1);
-        }
-        index++;
-    }
+    collidables.delete(collidableId);
 }
 
 const CAMERA_BOX_WIDTH = 5; //a kamera befoglaló doboza WIDTH x HEIGHT x WIDTH méretű
@@ -129,27 +127,51 @@ export function createCameraBounds() {
 // Igazat ad vissza, ha volt ütközés.
 export function detectCollisions(cameraBounds) {
     let collision = false;
-    for(const c of collidables) {
+    for(const c of collidables.values()) {
         if(cameraBounds.intersectsBox(c.boundingBox)) { //ütközés történt
             collision = true;
             //objektum típusától függő esemény végrehajtása. Bizonyos típusok nem állítják meg a játékost.
             if(!c.handleCollisionType()) collision = false;
              //ha szükséges, eltávolítja az objektumot. Ha el lett távolítva, akkor nem állítja meg a játékost.
             if(c.handleRemoval()) collision = false;
-
-            c.boundingBox.getCenter(center); //középpont meghatározása
-            if(cameraBounds.min.x <= c.boundingBox.max.x || cameraBounds.max.x >= c.boundingBox.min.x) { //van-e ütközés x irányban
-               center.x > camera.position.x ? camera.position.x -= PUSH_DISTANCE : camera.position.x += PUSH_DISTANCE;
-            }
-            if(cameraBounds.min.y <= c.boundingBox.max.y || cameraBounds.max.y > c.boundingBox.min.y) { //van-e ütközés y irányban
-                center.y > camera.position.y ? camera.position.y -= PUSH_DISTANCE : camera.position.y += PUSH_DISTANCE;
-            }
-            if(cameraBounds.min.z <= c.boundingBox.max.z || cameraBounds.max.z >= c.boundingBox.min.z) { //van-e ütközés z irányban
-                center.z > camera.position.z ? camera.position.z -= PUSH_DISTANCE : camera.position.z += PUSH_DISTANCE;
-            }
+            if(collision) pushOut(cameraBounds, c.boundingBox, PUSH_DISTANCE, PRIORITY_NORMAL); //kilökés az objektumból
         }
     }
     return collision;
+}
+
+export const PRIORITY_NORMAL = 0;
+export const PRIORITY_XZ = 1;
+
+//akkor hívódik meg, ha ütközés történt, kilöki a játékost az objektumból, amivel ütközött
+//cameraBounds: a játékos elhelyezkedése
+//boundingBox: az objektum elhelyezkedése
+//distance: a távolság, amennyivel kilöki
+//priority: milyen irányú ütközések legyenek figyelembe véve
+export function pushOut(cameraBounds, boundingBox, distance, priority) { 
+    boundingBox.getCenter(center); //középpont meghatározása
+    if(priority === undefined) priority = PRIORITY_NORMAL;
+    if(priority === PRIORITY_NORMAL) { //minden irányban elvégzi a kilökést
+        if(cameraBounds.min.x <= boundingBox.max.x || cameraBounds.max.x >= boundingBox.min.x) { //van-e ütközés x irányban
+            center.x > camera.position.x ? camera.position.x -= distance : camera.position.x += distance;
+        }
+        if(cameraBounds.min.z <= boundingBox.max.z || cameraBounds.max.z >= boundingBox.min.z) { //van-e ütközés z irányban
+             center.z > camera.position.z ? camera.position.z -= distance : camera.position.z += distance;
+        }
+        if(cameraBounds.min.y <= boundingBox.max.y || cameraBounds.max.y > boundingBox.min.y) { //van-e ütközés y irányban
+            center.y > camera.position.y ? camera.position.y -= distance : camera.position.y += distance;
+        }
+    } else if(priority === PRIORITY_XZ) { //vízszintes irányú kilökés előnyt élvez.
+        if(cameraBounds.min.x <= boundingBox.max.x || cameraBounds.max.x >= boundingBox.min.x) { //van-e ütközés x irányban
+            center.x > camera.position.x ? camera.position.x -= distance : camera.position.x += distance;
+         } else if(cameraBounds.min.z <= boundingBox.max.z || cameraBounds.max.z >= boundingBox.min.z) { //van-e ütközés z irányban
+             center.z > camera.position.z ? camera.position.z -= distance : camera.position.z += distance;
+         } else { //x,z irány prioritást kap
+             if(cameraBounds.min.y <= boundingBox.max.y || cameraBounds.max.y > boundingBox.min.y) { //van-e ütközés y irányban
+                 center.y > camera.position.y ? camera.position.y -= distance : camera.position.y += distance;
+             }
+         }
+    }
 }
 
 //lefele mozgatja a kamerát, ha nem ugrik, nincs alatta semmi, és CAMERA_BOX_HEIGHT-nál magasabban van
@@ -158,7 +180,7 @@ export function gravity(cameraBounds) {
     const extendedCameraBounds = new THREE.Box3();
     extendedCameraBounds.copy(cameraBounds);
     extendedCameraBounds.expandByPoint(new THREE.Vector3(camera.position.x, camera.position.y-CAMERA_BOX_HEIGHT-1, camera.position.z));
-    for(const c of collidables) {
+    for(const c of collidables.values()) {
         if(extendedCameraBounds.intersectsBox(c.boundingBox)) { //van valami alatta
             c.handleCollisionType(); //alatta lévő objektum típusától függő esemény
             c.handleRemoval(); //ha el kell távolítani
@@ -168,13 +190,17 @@ export function gravity(cameraBounds) {
     }
     if(!MOVE.jumping && camera.position.y > CAMERA_BASE_HEIGHT && !collidableUnder) {
         MOVE.setFalling(true);
-        camera.position.y -= MOVE.JUMP_SPEED;
-        fallDistance += MOVE.JUMP_SPEED;
+        const fallAmount = MOVE.FALL_SPEED + (fallHelperCounter * FALL_ACCELERATION); //zuhanás közben gyorsulni fog
+        fallHelperCounter++;
+        camera.position.y -= fallAmount;
+        fallDistance += fallAmount;
     } else if(camera.position.y <= CAMERA_BASE_HEIGHT) {
        handleFallEnding();
     }
 }
 
+let fallHelperCounter = 0;
+const FALL_ACCELERATION = 0.05; 
 let fallDistance = 0; //méri hogy milyen távolságot 'zuhant' a játékos
 const MIN_DAMAGE_DISTANCE = 100; //ekkor zuhanás alatt nincs sebződés
 
@@ -184,6 +210,7 @@ function handleFallEnding() { //meghívódik ha befejeződik a játékos zuhaná
         damage(5*fallDistance, 'Túl magasról estél le!')
     }
     fallDistance = 0;
+    fallHelperCounter = 0;
 }
 
 //láthatatlan objektum ütközés detektáláshoz
