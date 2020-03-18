@@ -36,7 +36,9 @@ function initScene() {
 
     camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, CAMERA_FAR);
     camera.position.set(0,CAMERA_BASE_HEIGHT,0);
+
     listener = new THREE.AudioListener();
+    SOUNDS.loadSounds(); //hangok betöltése
     camera.add(listener);
     
     //renderer létrehozása
@@ -77,7 +79,6 @@ function initScene() {
     WORLD_BUILDING.addCoins(); //gyűjtendő érmék hozzáadása a színtérhez
 
     GAMEPLAY.initiateUserInterface(); //hp bar, stb...
-    SOUNDS.loadSounds(); //hangok betöltése
     addStats();
     render(); //renderelés
 }

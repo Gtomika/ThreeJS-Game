@@ -37,7 +37,8 @@ export const TYPE_NORMAL = 0;
 export const TYPE_LETHAL = 1;
 export const TYPE_POINT = 2;
 export const TYPE_MOVING = 3;
-//sebző/gyógyító objektumok típusa: damage/heal-x, ahol x a mennyiség
+//sebző/gyógyító objektumok típusa: damage/heal-x-stop/nostop, ahol x a mennyiség, stop/nostop pedig megmondja
+//hogy megállítsa-e az ütközés a játékost.
 
 //osztály az ütközés detektálásban lévő objektumoknak
 //tartalmazza a befoglaló dobozt és a típust, stb
@@ -63,19 +64,21 @@ class CollidableInfo {
         } else if(this.type === TYPE_MOVING) { //mozgó (animált) objektummal ütközés
             const cameraBounds = createCameraBounds();
             //nagyobb pushout távolság kell, különben a gyorsan mozgó objektumok 'átmennek' a játékoson
-            pushOut(cameraBounds, this.boundingBox, 10*PUSH_DISTANCE, PRIORITY_XZ); 
+            pushOut(cameraBounds, this.boundingBox, 15*PUSH_DISTANCE, PRIORITY_XZ); 
             return false; //hogy a megívó függvény ne mozgassa újra a játékost
         } else if(this.type === TYPE_POINT) { //pontszerzés történt
             coinFound();
             return false;
-        } else if(this.type.startsWith('damage')) { //ütközés sebző objektummal
-            const amount = this.type.split('-');
-            damage(amount);
-            return false;
-        } else if(this.type.startsWith('heal')) { //ütközés gyógyító objektummal
-            const amount = this.type.split('-');
-            heal(amount);
-            return false;
+        } else if(this.type.startsWith('DAMAGE')) { //ütközés sebző objektummal
+            const data = this.type.split('-');
+            damage(data[1]);
+            return data[2]==='STOP' ? true : false;
+        } else if(this.type.startsWith('HEAL')) { //ütközés gyógyító objektummal
+            const data = this.type.split('-');
+            heal(data[1]);
+            return data[2]==='STOP' ? true : false;
+        } else {
+            throw 'Ütközés ismeretlen típussal: ' + this.type;
         }
     }
 

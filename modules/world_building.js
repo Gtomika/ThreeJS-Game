@@ -2,10 +2,11 @@
 
 //import * as THREE from './three.module.js';
 import { registerCollidableObject, TYPE_NORMAL, TYPE_LETHAL, TYPE_POINT, createInvisibleBounds } from './collision.js';
-import { scene, renderer, SUN_POSITION, SUN_LIGHT_INTENSITY, AMBIENT_LIGHT_INTENSITY} from './game.js';
+import { scene, renderer, SUN_POSITION, SUN_LIGHT_INTENSITY, AMBIENT_LIGHT_INTENSITY, vecToString} from './game.js';
 import { RoughnessMipmapper } from './RoughnessMipmapper.js';
 import { createAnimatedBox } from './animation.js';
 import * as SHADERS from './shaders.js';
+import { attachRadioactivitySound } from './sound.js';
 
 export function addObjects() {
     createBox([30,10,0],[20,20,20]); //kezdő pozíció melletti 'pálya'
@@ -14,7 +15,7 @@ export function addObjects() {
     createBox([130,40,15],[20,10,20]);
     createBox([150,65,-12],[20,10,20]);
     createBox([140,80,-90],[30,10,100]); //efelett megy az animált akadály, alatt spike field
-    createAnimatedBox([180,100,-90],[10,30,30], 'X', [180,100], 2000);
+    createAnimatedBox([180,100,-90],[10,30,30], 'X', [180,100], 3000);
     createSpikeField([140,0,-90],150,60);
 }
 
@@ -78,9 +79,26 @@ export function addModels() { //3d modellek betöltése, pozícionálása és a 
     gltfLoader = new THREE.GLTFLoader();
     roughnessMipmapper = new RoughnessMipmapper(renderer);
 
-    loadModel('models/car_rusty/scene.gltf', 0.7, [-240, 0, 168], {boundsSize: [20,20,50], type: TYPE_NORMAL}); 
-    loadModel('models/old_truck/scene.gltf', 1.75, [-270, 15, 270], {boundsSize: [20, 30,50], type: TYPE_NORMAL});
-    loadModel('models/mi_24_heli/scene.gltf', 0.8, [-75, 20, 360], {boundsSize: [90,30,30], type: TYPE_NORMAL});
+    //roncstelep
+    loadModel('car_rusty', 0.7, [-240, 0, 168], {boundsSize: [20,20,50], type: TYPE_NORMAL}); 
+    loadModel('old_truck', 1.75, [-270, 15, 270], {boundsSize: [20, 30,50], type: TYPE_NORMAL});
+    loadModel('car_crashed', 0.9, [-310,0,180], {boundsSize:[20,30,40], type: TYPE_NORMAL});
+    loadModel('tree_1', 0.85, [-220,0,242], {boundsSize:[5,40,5], type: TYPE_NORMAL});
+    loadModel('tree_1', 0.85, [-288,0,117], {boundsSize:[5,60,5], type: TYPE_NORMAL});
+    loadModel('tree_2', 0.6, [-191,0,107], {boundsSize:[5,60,5], type: TYPE_NORMAL});
+    loadModel('tree_2', 0.6, [-332,0,230], {boundsSize:[5,60,5], type: TYPE_NORMAL});
+
+    //bázis
+    loadModel('mi_24_heli', 0.8, [200, 20, 360], {boundsSize: [90,30,30], type: TYPE_NORMAL});
+    loadModel('tank_t34', 0.68, [300,-20,362], {boundsSize: [40,75,70], type: TYPE_NORMAL});
+    loadModel('atom_bomb',0.7, [360,5,260], {boundsSize: [10,10,10],type: TYPE_NORMAL});
+    loadModel('radioactive_box',0.8, [375,-2,240], {boundsSize: [5,10,5],type: TYPE_NORMAL});
+    loadModel('radioactive_barrel',0.7, [325,0,220], {boundsSize: [5,10,5],type: 'DAMAGE-100-STOP'});
+    loadModel('radioactive_barrel',0.7, [400,0,275], {boundsSize: [5,10,5],type: 'DAMAGE-100-STOP'});
+    loadModel('radioactive_barrel',0.7, [393,0,250], {boundsSize: [5,10,5],type: 'DAMAGE-100-STOP'});
+    const radSoundMesh = createInvisibleBounds([360,5,260],[1,1,1]); //ebből jön a pozícionális hang
+    scene.add(radSoundMesh);
+    attachRadioactivitySound(radSoundMesh);
 
     roughnessMipmapper.dispose();
 }
@@ -88,7 +106,7 @@ export function addModels() { //3d modellek betöltése, pozícionálása és a 
 //betölti a megadott modelt
 //collisionData: opcionális, ha van, akkor a befoglaló doboz méretét tartalmazza, ütközés típusát.
 function loadModel(path, scale = 1, positionArray = [0, 0, 0], collisionData = undefined) { 
-    gltfLoader.load(path, function ( gltf ) {  
+    gltfLoader.load('models/'+path+'/scene.gltf', function ( gltf ) {  
         gltf.scene.position.set(positionArray[0], positionArray[1], positionArray[2]);
         gltf.scene.traverse( function (child) {
             if (child.isMesh) {
@@ -121,8 +139,16 @@ export function addCoins() { //hozzáadja a gyűjtendő érméket
 
     createCoin([-295,10,270]); //old truck modell mögött
     createCoin([-240,25,160]); //rusty car modell tetején
-    createCoin([-132,10,380]); //helikopter mögött
-    createCoin([-75,10,380]); //helikopter mögött
+    createCoin([-328,10,180]);
+
+
+    createCoin([143,10,380]); //helikopter mögött
+    createCoin([200,10,380]); //helikopter mögött
+    createCoin([332,10,336]); //t34 melett
+    createCoin([332,10,370]); //t34 mellett
+    createCoin([383,10,269]); //radioaktív területen
+    createCoin([410,10,243]); //radioaktív területen
+    createCoin([325,20,220]); //radioaktív területen
 
     document.getElementById('coinCounter').textContent = 'Érmék: 0/' + maximumCoins; //számoló szöveg inicializálása 
 }

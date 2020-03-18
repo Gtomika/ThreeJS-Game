@@ -1,7 +1,11 @@
 import { listener } from './game.js';
 import * as THREE from './three.module.js';
 
-let coinSound, walkSound, runSound, jumpSound, deathSound, healSound, damageSound, music; //globális hangok
+//globális hangok
+let coinSound, walkSound, runSound, jumpSound, deathSound, healSound, damageSound, music;
+
+//pozicionált hangok, ezeket hozzá kell adni objektumokhoz
+let radioactivitySound;
 
 export function loadSounds() { //inicializáláskor kell meghívni, betölti a hangokat
     initMusicMuter();
@@ -14,6 +18,7 @@ export function loadSounds() { //inicializáláskor kell meghívni, betölti a h
     damageSound = new THREE.Audio(listener);
     healSound = new THREE.Audio(listener);
     music = new THREE.Audio(listener);
+    radioactivitySound = new THREE.PositionalAudio(listener);
 
     const audioLoader = new THREE.AudioLoader();
     audioLoader.load('sounds/coin.wav', function( buffer ) {
@@ -22,10 +27,12 @@ export function loadSounds() { //inicializáláskor kell meghívni, betölti a h
     });
     audioLoader.load('sounds/walk.wav', function( buffer ) {
         walkSound.setBuffer( buffer );
+        walkSound.setLoop(true);
         walkSound.setVolume(0.2);
     });
     audioLoader.load('sounds/run.wav', function( buffer ) {
         runSound.setBuffer( buffer );
+        //runSound.setLoop(true);
         runSound.setVolume(0.3);
     });
     audioLoader.load('sounds/jump.wav', function( buffer ) {
@@ -42,22 +49,30 @@ export function loadSounds() { //inicializáláskor kell meghívni, betölti a h
     });
     audioLoader.load('sounds/music.wav', function( buffer ) {
         music.setBuffer( buffer );
-        music.setVolume(0.05);
+        music.setVolume(0.02);
         music.setLoop(true);
-        music.play();
+        if(!musicMuted) music.play();
+    });
+    audioLoader.load('sounds/geiger.wav', function( buffer ) {
+        radioactivitySound.setBuffer(buffer);
+        radioactivitySound.setLoop(true);
+        radioactivitySound.setVolume(0.7)
+        radioactivitySound.setRefDistance(8);
+        radioactivitySound.play();
     });
 }
 
-let musicMuted = false;
+let musicMuted = true; //alapból némítva van a zene
 function initMusicMuter() { // zene némító gomb beállítása
     const musicMuter = document.getElementById('musicSoundImage');
+    musicMuter.src = musicMuted ? 'img/muted.png' : 'img/sound.png';
     musicMuter.addEventListener('click', () => { 
         if(musicMuted) {
             musicMuter.src = 'img/sound.png';
-            music.play();
+            if(!music.isPlaying) music.play();
         } else {
             musicMuter.src = 'img/muted.png';
-            music.pause();
+            if(music.isPlaying) music.pause();
         }
         musicMuted = !musicMuted;
     });
@@ -91,7 +106,7 @@ export function pauseRunSound(resumeWalkSound = true) { //visszakapcsolja a walk
 }
 
 export function playDamageSound() {
-    damageSound.play();
+    if(!damageSound.isPlaying) damageSound.play();
 }
 
 export function playHealSound() {
@@ -100,4 +115,8 @@ export function playHealSound() {
 
 export function playDeathSound() {
     if(!deathSound.isPlaying) deathSound.play();
+}
+
+export function attachRadioactivitySound(mesh) {
+    mesh.add(radioactivitySound);
 }
