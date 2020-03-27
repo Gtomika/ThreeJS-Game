@@ -2,21 +2,24 @@
 
 //import * as THREE from './three.module.js';
 import { registerCollidableObject, TYPE_NORMAL, TYPE_LETHAL, TYPE_POINT, createInvisibleBounds } from './collision.js';
-import { scene, renderer, SUN_POSITION, SUN_LIGHT_INTENSITY, AMBIENT_LIGHT_INTENSITY, vecToString} from './game.js';
+import { scene, renderer, SUN_POSITION, SUN_LIGHT_INTENSITY, AMBIENT_LIGHT_INTENSITY} from './game.js';
 import { RoughnessMipmapper } from './RoughnessMipmapper.js';
-import { createAnimatedBox } from './animation.js';
+import { createMovingPlatform, createMovingObstacle } from './animation.js';
 import * as SHADERS from './shaders.js';
 import { attachRadioactivitySound } from './sound.js';
 
 export function addObjects() {
+    //createMovingPlatform([-60,10,-20],[40,5,40],'Z',[-20,60],5000); //teszt
     createBox([30,10,0],[20,20,20]); //kezdő pozíció melletti 'pálya'
     createBox([70,35,20],[40,10,20]);
     createSpikeField([100,0,20], 40, 20);
     createBox([130,40,15],[20,10,20]);
     createBox([150,65,-12],[20,10,20]);
-    createBox([140,80,-90],[30,10,100]); //efelett megy az animált akadály, alatt spike field
-    createAnimatedBox([180,100,-90],[10,30,30], 'X', [180,100], 3000);
+    createBox([140,80,-90],[30,10,100]); //efelett megy az animált akadály, alatta spike field
+    createMovingObstacle([180,100,-90],[10,30,30], 'X', [180,100], 3000);
     createSpikeField([140,0,-90],150,60);
+    createMovingPlatform([130,90,-170], [30,5,30], 'X', [130,50], 5000);
+    createBox([10,100,-140],[40,10,40]);
 }
 
 //létrehoz egy téglatestet a megadott pozíción, a megadott mérettel és színnek.
@@ -93,24 +96,38 @@ export function addModels() { //3d modellek betöltése, pozícionálása és a 
     loadModel('tank_t34', 0.68, [300,-20,362], {boundsSize: [40,75,70], type: TYPE_NORMAL});
     loadModel('atom_bomb',0.7, [360,5,260], {boundsSize: [10,10,10],type: TYPE_NORMAL});
     loadModel('radioactive_box',0.8, [375,-2,240], {boundsSize: [5,10,5],type: TYPE_NORMAL});
-    loadModel('radioactive_barrel',0.7, [325,0,220], {boundsSize: [5,10,5],type: 'DAMAGE-100-STOP'});
+    loadModel('radioactive_barrel',0.7, [350,0,236], {boundsSize: [5,10,5],type: 'DAMAGE-100-STOP'});
     loadModel('radioactive_barrel',0.7, [400,0,275], {boundsSize: [5,10,5],type: 'DAMAGE-100-STOP'});
     loadModel('radioactive_barrel',0.7, [393,0,250], {boundsSize: [5,10,5],type: 'DAMAGE-100-STOP'});
     const radSoundMesh = createInvisibleBounds([360,5,260],[1,1,1]); //ebből jön a pozícionális hang
     scene.add(radSoundMesh);
     attachRadioactivitySound(radSoundMesh);
+    loadModel('fence', 1.55, [460,0,215], {boundsSize: [70,100,10], type: TYPE_NORMAL}); //bázis körüli kerítés
+    loadModel('fence', 1.55, [385,0,215], {boundsSize: [70,100,10], type: TYPE_NORMAL});
+    loadModel('fence', 1.55, [310,0,215], {boundsSize: [70,100,10], type: TYPE_NORMAL});
+    loadModel('fence', 1.55, [235,0,215], {boundsSize: [70,100,10], type: TYPE_NORMAL});
+    //bejárat itt
+    loadModel('fence', 1.55, [140,0,215], {boundsSize: [70,100,10], type: TYPE_NORMAL});
+    loadModel('fence', 1.55, [65,0,215], {boundsSize: [70,100,10], type: TYPE_NORMAL});
+    loadModel('fence', 1.55, [25,0,255], {boundsSize: [10,100,70], type: TYPE_NORMAL}, true);
+    loadModel('fence', 1.55, [25,0,330], {boundsSize: [10,100,70], type: TYPE_NORMAL}, true);
+    loadModel('fence', 1.55, [25,0,405], {boundsSize: [10,100,70], type: TYPE_NORMAL}, true);
+    loadModel('fence', 1.55, [25,0,480], {boundsSize: [10,100,70], type: TYPE_NORMAL}, true);
 
     roughnessMipmapper.dispose();
 }
 
 //betölti a megadott modelt
 //collisionData: opcionális, ha van, akkor a befoglaló doboz méretét tartalmazza, ütközés típusát.
-function loadModel(path, scale = 1, positionArray = [0, 0, 0], collisionData = undefined) { 
+function loadModel(path, scale = 1, positionArray = [0, 0, 0], collisionData = undefined, rotate = false) { 
     gltfLoader.load('models/'+path+'/scene.gltf', function ( gltf ) {  
         gltf.scene.position.set(positionArray[0], positionArray[1], positionArray[2]);
         gltf.scene.traverse( function (child) {
             if (child.isMesh) {
                 roughnessMipmapper.generateMipmaps(child.material);
+                if(rotate) {
+                    child.rotation.z += Math.PI/2;
+                }
             }
             child.scale.set(scale, scale, scale);
         });
@@ -136,6 +153,7 @@ export function addCoins() { //hozzáadja a gyűjtendő érméket
     createCoin([150,80,-12]);
     createCoin([135,95,-60]);
     createCoin([135,95,-125]);
+    createCoin([10,110,-140]);
 
     createCoin([-295,10,270]); //old truck modell mögött
     createCoin([-240,25,160]); //rusty car modell tetején
@@ -148,7 +166,7 @@ export function addCoins() { //hozzáadja a gyűjtendő érméket
     createCoin([332,10,370]); //t34 mellett
     createCoin([383,10,269]); //radioaktív területen
     createCoin([410,10,243]); //radioaktív területen
-    createCoin([325,20,220]); //radioaktív területen
+    createCoin([350,20,236]); //radioaktív területen
 
     document.getElementById('coinCounter').textContent = 'Érmék: 0/' + maximumCoins; //számoló szöveg inicializálása 
 }
@@ -194,7 +212,6 @@ function createCoinHelperText() { //tájékoztató szöveget ad a színtérhez
         const textMesh = new THREE.Mesh(textGeometry, textMaterial);
         textMesh.position.set(-20,15,-60);
         scene.add(textMesh);
-        const textBounds = createInvisibleBounds([0,10,-60], [40,20,6]); //hozzáadás az ütközés detektáláshoz
-        registerCollidableObject(textBounds, TYPE_NORMAL);
+        registerCollidableObject(textMesh, TYPE_NORMAL, true);
     });
 }

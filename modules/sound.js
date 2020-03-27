@@ -57,7 +57,7 @@ export function loadSounds() { //inicializáláskor kell meghívni, betölti a h
         radioactivitySound.setBuffer(buffer);
         radioactivitySound.setLoop(true);
         radioactivitySound.setVolume(0.7)
-        radioactivitySound.setRefDistance(8);
+        radioactivitySound.setRefDistance(6);
         radioactivitySound.play();
     });
 }

@@ -145,7 +145,7 @@ const render = function() { //renderelő metódus
         MOVE.stopMovement();
     }
     //gravitáció szimulálása
-    COLLISION.gravity(cameraBounds);
+    COLLISION.gravity();
 
     //az 'érmék' forgatása
     updateCoinRotationAngles();
