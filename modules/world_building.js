@@ -4,12 +4,14 @@
 import { registerCollidableObject, TYPE_NORMAL, TYPE_LETHAL, TYPE_POINT, createInvisibleBounds } from './collision.js';
 import { scene, renderer, SUN_POSITION, SUN_LIGHT_INTENSITY, AMBIENT_LIGHT_INTENSITY} from './game.js';
 import { RoughnessMipmapper } from './RoughnessMipmapper.js';
-import { createMovingPlatform, createMovingObstacle } from './animation.js';
+import { createMovingPlatform, createMovingObstacle, createHealingObject } from './animation.js';
 import * as SHADERS from './shaders.js';
 import { attachRadioactivitySound } from './sound.js';
 
 export function addObjects() {
     //createMovingPlatform([-60,10,-20],[40,5,40],'Z',[-20,60],5000); //teszt
+    createHealingObject(-30,10,-60); //bemutató a felirat mellett
+
     createBox([30,10,0],[20,20,20]); //kezdő pozíció melletti 'pálya'
     createBox([70,35,20],[40,10,20]);
     createSpikeField([100,0,20], 40, 20);

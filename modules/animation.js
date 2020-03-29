@@ -1,6 +1,7 @@
-import { camera } from './game.js';
+import { camera, scene } from './game.js';
 import { createBox } from './world_building.js';
-import { updateCollidableBounds, TYPE_MOVING_PLATFORM, TYPE_MOVING_OBSTACLE} from './collision.js';
+import { updateCollidableBounds, TYPE_MOVING_PLATFORM, TYPE_MOVING_OBSTACLE, registerCollidableObject} from './collision.js';
+import { TetrahedronGeometry, MeshPhongMaterial } from './three.module.js';
 
 //létrehoz egy téglatestet, ami a megadott irányban mozog (ismétlődő animáció), és ütközéskor mozgatja a játékost.
 //axis: 'x', 'Y', 'Z' lehet
@@ -85,4 +86,24 @@ export function createMovingPlatform(position, bounds, axis, fromTo, time) {
     animation.chain(reversedAnimation); //összekötés
     reversedAnimation.chain(animation);
     animation.start(); //indítás
+}
+
+//Játékost gyógyító objektumot készít. Tweeneléssel van forgatva.
+export function createHealingObject(x, y, z) {
+    const definingPoints = [];
+    for(let i=0; i<32; i++) {
+        definingPoints.push(new THREE.Vector2(Math.sin( i *  0.1) * 10, i));
+    }
+    const healGeometry = new THREE.LatheGeometry(definingPoints);
+    const healMaterial = new MeshPhongMaterial({color: 0xB80F0A});
+    const healMesh = new THREE.Mesh(healGeometry, healMaterial);
+    healMesh.position.set(x, y, z);
+    healMesh.scale.set(0.2, 0.2, 0.2);
+    scene.add(healMesh);
+    registerCollidableObject(healMesh, 'HEAL-500', true);
+
+    const animation = new TWEEN.Tween(healMesh.rotation)
+    .to({x: 2*Math.PI, z: 2*Math.PI}, 3000);
+    animation.repeat(Infinity); //folytonosan
+    animation.start();
 }
