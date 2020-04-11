@@ -1,5 +1,7 @@
+import { camera } from "./game.js";
 
-export function coinRotationShader() { //vertex shader: forgatja az érmét
+ //vertex shader: forgatja az érmét (és a normálvektorokat is)
+export function coinRotationShader() {
     return `                                
 		uniform float angle;
 		
@@ -27,6 +29,7 @@ export function coinRotationShader() { //vertex shader: forgatja az érmét
     `;
 }
 
+//A Phong modellnek megfelelően számolja ki az árnyalást.
 export function coinFragmentShader() { 
 	return `
 	const vec3 lightColor = vec3(1.0, 1.0, 1.0); //fehér
@@ -35,7 +38,8 @@ export function coinFragmentShader() {
 	uniform float ambientLightIntensity; //fények tulajdonságai
 	uniform vec3 sunPosition;
 	uniform float sunLightIntensity;
-
+	uniform float coinShininess; //érme visszaverő képessége
+	
 	varying vec3 pos;
 	varying vec3 norm;
 
@@ -47,7 +51,18 @@ export function coinFragmentShader() {
 		float diffuseLight = max(dot(L, nNormal), 0.0);
 		vec3 diffuse = lightColor * diffuseLight * sunLightIntensity * coinColor;
 
-		gl_FragColor.xyz = ambient + diffuse; //végső szín
+		//spekuláris komponens
+		vec3 pointsToCamera = normalize(cameraPosition - pos); //THREEjs már beadja a cameraPosition-t
+		vec3 H = normalize(L + pointsToCamera); //segédvektor
+		float specularAngle = dot(H, nNormal);  //a tükröződés mértékének meghatározása
+		if(specularAngle < 0.0) specularAngle = 0.0;
+		//valamiért firefoxon a max fv-t itt nem ismeri fel, és hibát dob... A fenti max fv. működik
+		//float specularAngle = max(dot(H, nNormal), 0.0);
+		float specularLight = pow(specularAngle, coinShininess); //visszaverődési képesség figyelembe vétele
+		if(diffuseLight <= 0.0) specularLight = 0.0;
+		vec3 specular = coinColor * lightColor * specularLight;
+
+		gl_FragColor.xyz = ambient + diffuse + specular; //végső szín
 		gl_FragColor.w = 1.0;
     }
     `;
@@ -61,11 +76,12 @@ export function saveCoinData(angleUniform, coinGeometry) { //meg kell hívni ha 
 	COIN_DATA.push([angleUniform, coinGeometry]);
 }
 
-export function updateCoinRotationAngles() { //növeli a forgatási szöget. Ez a render loopban van meghívva.
+//Ez a render loopban van meghívva és módosítja azokat az uniform változókat amikre az érme shadernek szüksége van.
+export function updateCoinShader() {
     for(const coinData of COIN_DATA) {
-		const coinGeometry = coinData[1]; //egyenlőre ez nincs használva
+		//const coinGeometry = coinData[2]; //egyenlőre ez nincs használva
 
-		const angleUniform = coinData[0];
+		const angleUniform = coinData[0]; //forgásszög frissítése
         angleUniform.value += ROTATION_ANGLE_DELTA;
 		if(angleUniform.value > 2 * Math.PI) angleUniform.value = 0.0;
     }

@@ -2,7 +2,7 @@
 
 //import * as THREE from './three.module.js';
 import { registerCollidableObject, TYPE_NORMAL, TYPE_LETHAL, TYPE_POINT, createInvisibleBounds } from './collision.js';
-import { scene, renderer, SUN_POSITION, SUN_LIGHT_INTENSITY, AMBIENT_LIGHT_INTENSITY} from './game.js';
+import { scene, renderer, SUN_POSITION, SUN_LIGHT_INTENSITY, AMBIENT_LIGHT_INTENSITY, camera} from './game.js';
 import { RoughnessMipmapper } from './RoughnessMipmapper.js';
 import { createMovingPlatform, createMovingObstacle, createHealingObject } from './animation.js';
 import * as SHADERS from './shaders.js';
@@ -173,12 +173,15 @@ export function addCoins() { //hozzáadja a gyűjtendő érméket
     document.getElementById('coinCounter').textContent = 'Érmék: 0/' + maximumCoins; //számoló szöveg inicializálása 
 }
 
+const COIN_SHININESS = 3;
+
 function createCoin(position) { //létrehoz egy forgó, felszedhető érmét
     const coinUniforms = { 
         angle: { type: 'float', value: 0.0 }, //ez majd változtatva lesz
         ambientLightIntensity: { type: 'float', value: AMBIENT_LIGHT_INTENSITY},
         sunPosition: { type: 'vec3', value: SUN_POSITION },
-        sunLightIntensity: { type: 'float', value: SUN_LIGHT_INTENSITY }
+        sunLightIntensity: { type: 'float', value: SUN_LIGHT_INTENSITY },
+        coinShininess: { type: 'float', value: COIN_SHININESS}
     }
     const coinMaterial = new THREE.ShaderMaterial({
         uniforms: coinUniforms,

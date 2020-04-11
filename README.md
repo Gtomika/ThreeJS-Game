@@ -9,6 +9,13 @@ git clone https://github.com/Gtomika/ThreeJS-Game.git
 
 (NEM elég csak a zip-et letölteni, mert a git Large File Storage-ben lévő fájlokat az nem tartalmazza.)
 
+# I. Mérföldkő (április 5)
+
+Ha erre a verzióra van szükség akkor:
+
+* git clone https://github.com/Gtomika/ThreeJS-Game.git (ha még nincs letöltve)
+* git checkout a7f8968f269df0154ebee2608933b4683c60044e (ez az utolsó április 5 előtti commit) 
+
 # Használat
 
 Web szerverrel kell használni, vagy a böngésző nem fogja betölteni a textúrákat.

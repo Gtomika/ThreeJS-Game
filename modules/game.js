@@ -1,11 +1,11 @@
 'use strict';
 
 import * as MOVE from './move.js';
-import * as COLLISION from './collision.js'
+import * as COLLISION from './collision.js';
 import * as WORLD_BUILDING from './world_building.js';
 import * as GAMEPLAY from './gameplay.js';
 import * as SOUNDS from './sound.js';
-import {updateCoinRotationAngles} from './shaders.js';
+import { updateCoinShader } from './shaders.js';
 
 let stats;
 export let renderer;
@@ -29,10 +29,10 @@ export const SUN_POSITION = new THREE.Vector3(arenaSize,500,arenaSize*0.75);
 export const AMBIENT_LIGHT_INTENSITY = 0.05; 
 export const SUN_LIGHT_INTENSITY = 0.8;
 
-function initScene() {
+function initScene() { 
     // scene és camera
     scene = new THREE.Scene(); 
-    scene.fog = new THREE.Fog(0xD3D3D3, 1, CAMERA_FAR) //szürke, lineáris köd
+    scene.fog = new THREE.Fog(0xD3D3D3, 1, CAMERA_FAR); //szürke, lineáris köd
 
     camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, CAMERA_FAR);
     camera.position.set(0,CAMERA_BASE_HEIGHT,0);
@@ -43,7 +43,7 @@ function initScene() {
     
     //renderer létrehozása
     renderer = new THREE.WebGLRenderer({antialias: true});
-    renderer.setSize(window.innerWidth, window.innerHeight); //nem teljes magasság
+    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.outputEncoding = THREE.sRGBEncoding;
     document.getElementById('canvasContainer').appendChild(renderer.domElement);
     //const axes = new THREE.AxesHelper(100); //3D segítő
@@ -148,7 +148,7 @@ const render = function() { //renderelő metódus
     COLLISION.gravity();
 
     //az 'érmék' forgatása
-    updateCoinRotationAngles();
+    updateCoinShader();
 
     renderer.render(scene, camera);
     requestAnimationFrame(render);
