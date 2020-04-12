@@ -1,0 +1,1830 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Module: gameplay</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Module: gameplay</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        
+            
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Itt találhatóak a játékos életpontjait módosító metódusok.</div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Gáspár Tamás</li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="~displayer"><span class="type-signature">(inner, constant) </span>displayer<span class="type-signature"> :HTMLElement</span></h4>
+
+
+
+
+<div class="description">
+    Ez jeleníti meg a játékos halálának okát.
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">HTMLElement</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line121">line 121</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~foundCoins"><span class="type-signature">(private, inner) </span>foundCoins<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Számolja hogy mennyi érmét talált már meg a játékos. Ha ez eléri a <a href="module-world_building.html#.maximumCoins">maximális számot</a>, akkor a játékos nyert.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line203">line 203</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~healthPoints"><span class="type-signature">(inner) </span>healthPoints<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    A játékos aktuális életpontjai.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line24">line 24</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~INVUL_TIME"><span class="type-signature">(private, inner, constant) </span>INVUL_TIME<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Sebzés/gyógyulás után ennyi ideig fix az életpontok száma. Erre azért van szükség, mert a az ilyen objektumokkal való ütközés a render loopban kerül ellenőrzésre, vagyis enélkül a játékos másodpercenként kb. 60-szor sebződne.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line43">line 43</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~invulnerable"><span class="type-signature">(inner) </span>invulnerable<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Megmondja hogy a játékos éppen sebezhetetlen-e. Ez a sebzés/gyógyulás után egy ideig igaz.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line48">line 48</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~MAX_HP"><span class="type-signature">(private, inner, constant) </span>MAX_HP<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    A játékos maximális életpontjai.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line19">line 19</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~PASSIVE_REGEN_AMOUNT"><span class="type-signature">(private, inner, constant) </span>PASSIVE_REGEN_AMOUNT<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Ennyi HP regenerálódik passzívan egy 'tick' alatt.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line100">line 100</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~PASSIVE_REGEN_TIME"><span class="type-signature">(private, inner, constant) </span>PASSIVE_REGEN_TIME<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Ennyi időnként történik passzív HP regeneráció ('tick').
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line94">line 94</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~respawned"><span class="type-signature">(inner) </span>respawned<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Jelzi, hogy a játékos újraéledt-e már miután meghalt. Kell, mert az ütközés detektálás folyamatosan meghívja a <a href="module-gameplay.html#.die">die</a> metódust, mivel a halál után még benne van az objektumban.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line126">line 126</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".coinFound"><span class="type-signature">(static) </span>coinFound<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Érmeszerzés</p>
+    
+
+
+
+<div class="description">
+    Meghívódik ha a játékos felvesz egy érmét.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line211">line 211</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".damage"><span class="type-signature">(static) </span>damage<span class="signature">(amount, deathMessage)</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Sebzés</p>
+    
+
+
+
+<div class="description">
+    Sebzi a játékost.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>amount</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A sebzés mennyisége.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>deathMessage</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Ez az üzenet jeleni meg, ha a sebzés esetleg megöli a játékost.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line58">line 58</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".die"><span class="type-signature">(static) </span>die<span class="signature">(deathMessage)</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Játékos halála</p>
+    
+
+
+
+<div class="description">
+    Megöli a játékost. Ezután megjelenik az ok, amire kattintva újra lehet éledni.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>deathMessage</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Az üzenet, ami a megjelenik a játékosnak.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line145">line 145</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".heal"><span class="type-signature">(static) </span>heal<span class="signature">(amount, playSound)</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Gyógyítás</p>
+    
+
+
+
+<div class="description">
+    Gyógyítja a játékost.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>amount</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Gyógyítás mértéke.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>playSound</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Megmondja, hogy legyen-e <a href="module-sound.html#.playHealSound">gyógyító hang</a> lejátszva.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line80">line 80</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".initiateUserInterface"><span class="type-signature">(static) </span>initiateUserInterface<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Felhasználói felület</p>
+    
+
+
+
+<div class="description">
+    Betölti a felhasználói felület HTML elemibe az aktuális értékeket.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line32">line 32</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".initPassiveRegeneration"><span class="type-signature">(static) </span>initPassiveRegeneration<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Passzív regeneráció</p>
+    
+
+
+
+<div class="description">
+    Elindítja a passzív regenerációt a játék elején. Ez növeli a játékos életét valamennyivel bizonyos időközönként, ha nincs tele.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő.</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line109">line 109</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~deathPointerLockUnlocked"><span class="type-signature">(inner) </span>deathPointerLockUnlocked<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Pointer lock irányítás</p>
+    
+
+
+
+<div class="description">
+    Felülírja az <a href="module-game.html#.pointerLockUnlocked">eredeti</a> callbacket. Azért kell, hogy a halál okát megjelenítő HTML objektum látszódjon.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line135">line 135</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~respawn"><span class="type-signature">(inner) </span>respawn<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Újraéledés</p>
+    
+
+
+
+<div class="description">
+    Visszahelyezi a játékost a kezdőpontba, helyreállítja az életpontját is.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line165">line 165</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~setHealthBar"><span class="type-signature">(inner) </span>setHealthBar<span class="signature">(healthPoints)</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">HP UI frissítés</p>
+    
+
+
+
+<div class="description">
+    Új értéket állít be a HP sávnak.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>healthPoints</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="gameplay.js.html">gameplay.js</a>, <a href="gameplay.js.html#line182">line 182</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-animation.html">animation</a></li><li><a href="module-collision.html">collision</a></li><li><a href="module-game.html">game</a></li><li><a href="module-gameplay.html">gameplay</a></li><li><a href="module-move.html">move</a></li><li><a href="module-shaders.html">shaders</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-world_building.html">world_building</a></li></ul><h3>Classes</h3><ul><li><a href="module-collision-CollidableInfo.html">CollidableInfo</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Sun Apr 12 2020 17:07:00 GMT+0200 (GMT+02:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

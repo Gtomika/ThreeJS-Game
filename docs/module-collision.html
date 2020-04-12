@@ -1,0 +1,2764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Module: collision</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Module: collision</h1>
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        
+            
+        
+    
+</header>
+
+<article>
+    <div class="container-overview">
+    
+        
+            <div class="description">Ebben a modulban vannak az ütközés detektálással, valamint gravitációval kapcsolatos metódusok.Az ütközésdetektálás csak a játékos és az objketumok közt van megvalósítva, ezért ha N objektum van a színtérben,akkor a műveletigénye O(N).<p>A megvalósítás <a href="https://threejs.org/docs/#api/en/math/Box3">befoglaló dobozokkal</a> történik.Minden az ütközés detektálásban részt vevő objektumot regisztálni kell (<a href="module-collision.html#.registerCollidableObject">module:collision.registerCollidableObject</a>).Az objektum kap egy típust, ami meghatározza mi fog történni, ha a játékos ütközik vele. Az típus konstansokat lásd lent.<p>Ezeken kívül lehet még megadni sebző/gyógyító típust. Ezt stringként kell megadni, beleírva a sebzés mennyiséget,és azt, hogy az ütközés megállítsa-e a játékost.</div>
+        
+
+        
+            
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Gáspár Tamás</li>
+        </ul>
+    </dd>
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line1">line 1</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>//100-at sebző, megállító típusconst dmg = 'DAMAGE-100-STOP'//50-et gyógyító. nem megállító típusconst heal = 'HEAL-50-NOSTOP'</code></pre>
+
+
+
+        
+    
+    </div>
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Classes</h3>
+
+        <dl>
+            <dt><a href="module-collision-CollidableInfo.html">CollidableInfo</a></dt>
+            <dd>Létrehozás</dd>
+        </dl>
+    
+
+    
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id=".PRIORITY_NORMAL"><span class="type-signature">(static, constant) </span>PRIORITY_NORMAL<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Kilökési típus. Mindhárom tengely mentén végez kilökést.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line284">line 284</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".PRIORITY_XZ"><span class="type-signature">(static, constant) </span>PRIORITY_XZ<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Kilökési típus. Először az X és Z tengely mentén végez kilökést, majd az Y tengely mentén csak akkor, ha az első kettő mentén nem kellett. A gyorsan <a href="module-animation.html#.createMovingObstacle">mozgó akadályoknál</a> használom,hogy ne 'nyomják le' a játékost a földbe.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line291">line 291</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".TYPE_LETHAL"><span class="type-signature">(static, constant) </span>TYPE_LETHAL<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Ütközésdetektálási típus. Ha ezzel ütközik a játékos, akkor meghal.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line89">line 89</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".TYPE_MOVING_OBSTACLE"><span class="type-signature">(static, constant) </span>TYPE_MOVING_OBSTACLE<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Ütközésdetektálási típus. A mozgó akadályok típusa.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line99">line 99</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".TYPE_MOVING_PLATFORM"><span class="type-signature">(static, constant) </span>TYPE_MOVING_PLATFORM<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Ütközésdetektálási típus. A mozgó akadályok típusa.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line104">line 104</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".TYPE_NORMAL"><span class="type-signature">(static, constant) </span>TYPE_NORMAL<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Alapértelmezett ütközésdetektálási típus. Ha ezzel ütközik a játékos, akkor semmi nem fog történni.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line84">line 84</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id=".TYPE_POINT"><span class="type-signature">(static, constant) </span>TYPE_POINT<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Ütközésdetektálási típus. Ha ezzel ütközik a játékos, az azt jelzi, hogy felszedett egy érmét.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line94">line 94</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~CAMERA_BOX_WIDTH"><span class="type-signature">(private, inner, constant) </span>CAMERA_BOX_WIDTH<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    A kamera befoglaló dobozának szélessége.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line234">line 234</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~center"><span class="type-signature">(inner) </span>center<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Az éppen vizsgált objektum középpontja. Mivel az ütközésdetektálás gyakran hívódik meg, ezért új objektum példányosítása helyett ez lesz módosítva.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line240">line 240</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~collidables"><span class="type-signature">(private, inner, constant) </span>collidables<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Az a map, ami az összes ütközésdetektálásban rész vevő objektum tulajdonságait tartalmazza. A kulcs az objektum azonosítója, így ez alapján gyorsan lehet keresni.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line188">line 188</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~FALL_ACCELERATION"><span class="type-signature">(private, inner, constant) </span>FALL_ACCELERATION<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Ennyivel gyorsul a zuhanó játékos minden alkalommal amikor a <a href="module-collision.html#.gravity">module:collision.gravity</a> meghívódik.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line369">line 369</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~fallDistance"><span class="type-signature">(private, inner) </span>fallDistance<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Méri, hogy milyen távolságot zuhant a játékos. Ez alapján lesz a zuhanási sebződés kiosztva.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line375">line 375</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~MIN_DAMAGE_DISTANCE"><span class="type-signature">(private, inner, constant) </span>MIN_DAMAGE_DISTANCE<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Ekkor zuhanás alatt nincs sebződés.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line381">line 381</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~OUT_OF_BOUNDS_WARNING_TIME"><span class="type-signature">(private, inner, constant) </span>OUT_OF_BOUNDS_WARNING_TIME<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Ennyi időnként (milliszekundumban) jelenhet meg figyelmeztetés, ha a játékos elhagyja a játékteret.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line41">line 41</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~PUSH_DISTANCE"><span class="type-signature">(private, inner, constant) </span>PUSH_DISTANCE<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Ekkora távolságra löki ki a játékost az objektumból, amivel ütközött. <a href="module-animation.html#.createMovingObstacle">Gyorsan mozgó objektumok</a> ennél nagyobb értéket használnak, hogy ne 'menjenek át' a játékoson.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line35">line 35</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~showOutOfBoundsWarning"><span class="type-signature">(private, inner) </span>showOutOfBoundsWarning<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Csak akkor jelenik meg figyelmeztetés, ha ez igaz.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-default">Default Value:</dt>
+    <dd class="tag-default"><ul class="dummy">
+            <li>true</li>
+        </ul></dd>
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line48">line 48</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".createCameraBounds"><span class="type-signature">(static) </span>createCameraBounds<span class="signature">()</span><span class="type-signature"> &rarr; {THREE.Box3}</span></h4>
+    
+
+    
+    <p class="summary">Játékos befoglaló doboza</p>
+    
+
+
+
+<div class="description">
+    Elkészíti a kamera befoglaló dobozát.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő.</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line249">line 249</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    A befoglaló doboz.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">THREE.Box3</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".createInvisibleBounds"><span class="type-signature">(static) </span>createInvisibleBounds<span class="signature">(position, boundsSize)</span><span class="type-signature"> &rarr; {THREE.Mesh}</span></h4>
+    
+
+    
+    <p class="summary">Láthatatlan objektum</p>
+    
+
+
+
+<div class="description">
+    Láthatatlan objektumot hoz létre ütközés detektáláshoz. Nem konvex objektumok (szöveg, betöltött modellek)is használják, hogy beléphessenek az ütközés detektálásba.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>position</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Az objektum pozíciója.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>boundsSize</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Az objektum mérete (x, y és z irányban).</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő.</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line413">line 413</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    A láthatatlan objektum.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">THREE.Mesh</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".detectCollisions"><span class="type-signature">(static) </span>detectCollisions<span class="signature">(cameraBounds)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+    <p class="summary">Ütközés detektálás és válasz</p>
+    
+
+
+
+<div class="description">
+    Megnézi hogy van-e ütközés. Ha igen, akkor kimozdítja a kamera befoglaló dobozát az objektumból.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>cameraBounds</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">THREE.Box3</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A játékos befoglaló doboza.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő.</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line265">line 265</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Igazat ad vissza, ha volt ütközés.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".detectOutOfBounds"><span class="type-signature">(static) </span>detectOutOfBounds<span class="signature">()</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+    
+
+    
+    <p class="summary">Játékterület detektálás</p>
+    
+
+
+
+<div class="description">
+    Ellenőrzi, hogy a játékos a játékterületen belül van-e. Ha nincs, akkor visszamozdítja.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line57">line 57</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Igaz, ha a játékos kilépett a játékterületről.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".gravity"><span class="type-signature">(static) </span>gravity<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Gravitáció</p>
+    
+
+
+
+<div class="description">
+    Lefele mozgatja a játékost, ha nem ugrik, nincs alatta semmi, és elég magasan van. A zuhanó játékos gyorsul.
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő.</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line335">line 335</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".pushOut"><span class="type-signature">(static) </span>pushOut<span class="signature">(cameraBounds, boundingBox, distance, priority)</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Kilökés</p>
+    
+
+
+
+<div class="description">
+    Akkor hívódik meg, ha ütközés történt, kilöki a játékost az objektumból, amivel ütközött.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>cameraBounds</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">THREE.Box3</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A játékos befoglaló doboza.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>boundingBox</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">THREE.Box3</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Az objektum befoglaló doboza.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>distance</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">float</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Kilökési távolság.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>priority</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Megmondja, hogy mely tengelyek mentén legyen kilökés.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő.</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line303">line 303</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".registerCollidableObject"><span class="type-signature">(static) </span>registerCollidableObject<span class="signature">(mesh, type, removeOnCollision<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Regisztráció</p>
+    
+
+
+
+<div class="description">
+    Hozzáadja az objektumot az ütközésdetektáláshoz.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>mesh</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">THREE.Mesh</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Az objektum.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+|
+
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Az objektum típusa.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>removeOnCollision</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Megmondja, hogy el legyen-e távolítva az objektum ütközéskor.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő.</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line199">line 199</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id=".updateCollidableBounds"><span class="type-signature">(static) </span>updateCollidableBounds<span class="signature">(mesh)</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Frissítés</p>
+    
+
+
+
+<div class="description">
+    Újraszámolja az objektum befoglaló  dobozát. Ezt mindig meg kell hívni ha az objektum pozícióját,méretét változtatjuk, például animáláskor.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>mesh</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">THREE.Mesh</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Az objektum.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő.</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line213">line 213</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~handleFallEnding"><span class="type-signature">(inner) </span>handleFallEnding<span class="signature">(type, id)</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Zuhanás befejezése</p>
+    
+
+
+
+<div class="description">
+    Meghívódik ha befejeződik a játékos zuhanása.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>type</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+|
+
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Annak az objektumnak a típusa, amire a játékos zuhant.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>id</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Annak az objektumnak az azonosítója, amire a játékos zuhant.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line391">line 391</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="~unregisterCollidableObject"><span class="type-signature">(inner) </span>unregisterCollidableObject<span class="signature">(collidableId)</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Eltávolítás</p>
+    
+
+
+
+<div class="description">
+    Eltávolítja az objektumot az ütközés detektálásból.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>collidableId</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Az objektum azonosítója.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő.</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="collision.js.html">collision.js</a>, <a href="collision.js.html#line225">line 225</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-animation.html">animation</a></li><li><a href="module-collision.html">collision</a></li><li><a href="module-game.html">game</a></li><li><a href="module-gameplay.html">gameplay</a></li><li><a href="module-move.html">move</a></li><li><a href="module-shaders.html">shaders</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-world_building.html">world_building</a></li></ul><h3>Classes</h3><ul><li><a href="module-collision-CollidableInfo.html">CollidableInfo</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Sun Apr 12 2020 17:07:00 GMT+0200 (GMT+02:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

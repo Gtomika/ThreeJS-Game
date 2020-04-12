@@ -1,4 +1,5 @@
 /**
+ * @ignore
  * @author Emmett Lalish / elalish
  *
  * This class generates custom mipmaps for a roughness map by encoding the lost variation in the
