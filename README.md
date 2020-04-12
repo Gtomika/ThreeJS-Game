@@ -3,6 +3,13 @@ Fejlett grafikai algoritmusok projektmunka.
 
 ThreeJS Játék first person nézetben.
 
+# Dokumentáció
+
+A kód JSDoc segítségével van dokumentálva, amiből HTML dokumentáció készült (lásd a docs mappában).
+Ezt a GitHub Pages segítségével hosztolom:
+
+https://gtomika.github.io/ThreeJS-Game/
+
 # Letöltés:
 
 git clone https://github.com/Gtomika/ThreeJS-Game.git
