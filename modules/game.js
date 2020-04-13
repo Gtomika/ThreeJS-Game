@@ -13,6 +13,7 @@ import * as WORLD_BUILDING from './world_building.js';
 import * as GAMEPLAY from './gameplay.js';
 import * as SOUNDS from './sound.js';
 import { updateCoinShader } from './shaders.js';
+import { Light } from './three.module.js';
 
 /**
  * Statisztikákat megjelenítő objektum, [stats.js]{@link https://github.com/mrdoob/stats.js/} használatával.
@@ -93,7 +94,7 @@ const CAMERA_FAR = 1000;
  * @constant
  * @type {THREE.Vector3}
  */
-export const SUN_POSITION = new THREE.Vector3(arenaSize,500,arenaSize*0.75);
+export const SUN_POSITION = new THREE.Vector3(arenaSize,arenaSize,arenaSize*0.75);
 /**
  * [Háttérfény]{@link https://threejs.org/docs/#api/en/lights/AmbientLight} intenzitás.
  */
@@ -125,6 +126,10 @@ function initScene() {
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.width = arenaSize;
+    renderer.shadowMap.height = arenaSize;
     document.getElementById('canvasContainer').appendChild(renderer.domElement);
     //const axes = new THREE.AxesHelper(100); //3D segítő
     //scene.add(axes);
@@ -137,7 +142,17 @@ function initScene() {
 
     //napfény szimulálása
     const sunLight = new THREE.DirectionalLight(0xffffff, SUN_LIGHT_INTENSITY);
-    sunLight.position.set(SUN_POSITION.x, SUN_POSITION.y, SUN_POSITION.z); //0,0,0-ba néz
+    sunLight.position.set(SUN_POSITION.x, SUN_POSITION.y, SUN_POSITION.z); 
+    sunLight.castShadow = true;
+    sunLight.shadow.camera.near = 0.5; //a shadow camera méreteit ki kell nagyítani, hogy az egész színteret lefedjék
+    sunLight.shadow.camera.far = arenaSize*5;
+    sunLight.shadow.mapSize.width = arenaSize; 
+    sunLight.shadow.mapSize.height = arenaSize; 
+    sunLight.shadow.camera.right = -arenaSize;
+    sunLight.shadow.camera.left = arenaSize;
+    sunLight.shadow.camera.top = arenaSize;
+    sunLight.shadow.camera.bottom = -arenaSize;
+    scene.add(new THREE.CameraHelper(sunLight.shadow.camera)); // --> mutatja a shadow kamerát 
     scene.add(sunLight);
 
     posDisplayer.textContent = vecToString(camera.position); //kezdeti pozíció, irány
@@ -202,6 +217,7 @@ function createBasicEnvironment() {
      const floorMaterial = new THREE.MeshLambertMaterial({ map: floorTexture, side: THREE.SingleSide });
      const floorGeometry = new THREE.PlaneGeometry(arenaSize, arenaSize, 1, 1);
      const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+     floor.receiveShadow = true;
      floor.rotation.x = - Math.PI / 2;
      scene.add(floor);
 }

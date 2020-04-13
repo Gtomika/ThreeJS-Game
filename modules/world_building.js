@@ -62,6 +62,8 @@ export function createBox(position, bounds, collisionType, color) {
         new THREE.MeshLambertMaterial({color: appliedColor})
     );
     mesh.position.set(position[0], position[1], position[2]);
+    mesh.castShadow = true;
+    mesh.receiveShadow = false; //a jobb FPS érdekében ez nem kap árnyékot, csak vet
     registerCollidableObject(mesh, colType);
     scene.add(mesh);
     return mesh;
@@ -180,6 +182,8 @@ function loadModel(path, scale = 1, positionArray = [0, 0, 0], collisionData = u
         gltf.scene.position.set(positionArray[0], positionArray[1], positionArray[2]);
         gltf.scene.traverse( function (child) {
             if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = false; //a jobb FPS érdekében ez nem kap árnyékot, csak vet
                 roughnessMipmapper.generateMipmaps(child.material);
                 if(rotate) {
                     child.rotation.z += Math.PI/2;
@@ -267,6 +271,8 @@ function createCoin(x, y, z) {
     const coinGeometry = new THREE.TorusGeometry(5, 2, 8, 30);
     SHADERS.saveCoinData(coinUniforms.angle, coinGeometry); //ezeket később frissíteni kell
     const coinMesh = new THREE.Mesh(coinGeometry, coinMaterial);
+    coinMesh.castShadow = true; //sajnos ezek árnyéka nem forog az érmével együtt
+    coinMesh.receiveShadow = false; //a jobb FPS érdekében ez nem kap árnyékot, csak vet
     coinMesh.position.set(x, y, z);
     registerCollidableObject(coinMesh, TYPE_POINT, true); //ütközéskor el lesz távolítva
     scene.add(coinMesh);
