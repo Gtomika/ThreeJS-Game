@@ -155,6 +155,8 @@ export function createHealingObject(x, y, z) {
     const healMesh = new THREE.Mesh(healGeometry, healMaterial);
     healMesh.position.set(x, y, z);
     healMesh.scale.set(0.2, 0.2, 0.2);
+    healMesh.castShadow = true;
+    healMesh.receiveShadow = false;
     scene.add(healMesh);
     registerCollidableObject(healMesh, 'HEAL-500', true);
 

@@ -8,7 +8,8 @@
  */
 
 import { registerCollidableObject, TYPE_NORMAL, TYPE_LETHAL, TYPE_POINT, createInvisibleBounds } from './collision.js';
-import { scene, renderer, SUN_POSITION, SUN_LIGHT_INTENSITY, AMBIENT_LIGHT_INTENSITY, camera} from './game.js';
+import { scene, renderer, AMBIENT_LIGHT_INTENSITY } from './game.js';
+import { sunPosition, sunLightIntensity } from './day_night.js';
 import { RoughnessMipmapper } from './RoughnessMipmapper.js';
 import { createMovingPlatform, createMovingObstacle, createHealingObject } from './animation.js';
 import * as SHADERS from './shaders.js';
@@ -91,10 +92,12 @@ function createSpikeField(center, width, length) {
         while(spikePosition[2] < center[2]+length/2-SPIKE_RADIUS) { //tüskék helyezése z irányban
             const spike = new THREE.Mesh(
                 new THREE.ConeGeometry(SPIKE_RADIUS, SPIKE_HEIGHT),
-                new THREE.MeshPhongMaterial({ color: 0x7E7E7E })); //szürke
+                new THREE.MeshLambertMaterial({ color: 0x7E7E7E })); //szürke
             spike.position.x = spikePosition[0];
             spike.position.y = spikePosition[1];
             spike.position.z = spikePosition[2];
+            spike.castShadow = true;
+            spike.receiveShadow = false;
             spikesGroup.add(spike);
             spikePosition[2] += 2*SPIKE_RADIUS + SPIKE_GAP;
         }
@@ -257,8 +260,8 @@ function createCoin(x, y, z) {
     const coinUniforms = { 
         angle: { type: 'float', value: 0.0 }, //ez majd változtatva lesz
         ambientLightIntensity: { type: 'float', value: AMBIENT_LIGHT_INTENSITY},
-        sunPosition: { type: 'vec3', value: SUN_POSITION },
-        sunLightIntensity: { type: 'float', value: SUN_LIGHT_INTENSITY },
+        sunPosition: { type: 'vec3', value: sunPosition },
+        sunLightIntensity: { type: 'float', value: sunLightIntensity },
         coinShininess: { type: 'float', value: COIN_SHININESS}
     }
     const coinMaterial = new THREE.ShaderMaterial({
@@ -269,7 +272,7 @@ function createCoin(x, y, z) {
         fragmentShader: SHADERS.coinFragmentShader()
     });
     const coinGeometry = new THREE.TorusGeometry(5, 2, 8, 30);
-    SHADERS.saveCoinData(coinUniforms.angle, coinGeometry); //ezeket később frissíteni kell
+    SHADERS.saveCoinData(coinUniforms.angle, coinUniforms.sunPosition, coinUniforms.sunLightIntensity); //ezeket később frissíteni kell
     const coinMesh = new THREE.Mesh(coinGeometry, coinMaterial);
     coinMesh.castShadow = true; //sajnos ezek árnyéka nem forog az érmével együtt
     coinMesh.receiveShadow = false; //a jobb FPS érdekében ez nem kap árnyékot, csak vet

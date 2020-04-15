@@ -103,11 +103,12 @@ const COIN_DATA = [];
  * @description Meg kell hívni ha egy érmét hozunk létre, [elmenti]{@link module:shaders.COIN_DATA} a megfelelő uniformokat.
  * @function
  * @since I. mérföldkő
- * @param {float} angleUniform A forgást meghatározó uniform 
- * @param {THREE.TorusGeometry} [coinGeometry = undefined] Az érme geometriája. Ez egyenlőre nincs használva. 
+ * @param {float} angleUniform A forgásszöget meghatározó uniform .
+ * @param {THREE.Vector3} sunPositionUniform A nap pozícióját meghatározó uniform.
+ * @param {float} sunLightIntensityUniform A napfény erősségét meghatározó uniform.
  */
-export function saveCoinData(angleUniform, coinGeometry = undefined) {
-	COIN_DATA.push([angleUniform, coinGeometry]);
+export function saveCoinData(angleUniform, sunPositionUniform, sunLightIntensityUniform) {
+	COIN_DATA.push([angleUniform, sunPositionUniform, sunLightIntensityUniform]);
 }
 /**
  * @summary Shader frissítés
@@ -115,14 +116,18 @@ export function saveCoinData(angleUniform, coinGeometry = undefined) {
  * uniform változókat amikre az érme shadernek szüksége van.
  * @function
  * @since I. mérföldkő
+ * @param {THREE.Vector3} sunPosition A nap új pozíciója.
+ * @param {float} sunLightIntensity A nap új fényereje.
  */
-export function updateCoinShader() {
+export function updateCoinShader(sunPosition, sunLightIntensity) {
     for(const coinData of COIN_DATA) {
-		//const coinGeometry = coinData[2]; //egyenlőre ez nincs használva
-
 		const angleUniform = coinData[0]; //forgásszög frissítése
         angleUniform.value += ROTATION_ANGLE_DELTA;
 		if(angleUniform.value > 2 * Math.PI) angleUniform.value = 0.0;
+		const sunPositionUniform = coinData[1]; //napfény tulajdonságainak frissítése
+		sunPositionUniform.value = sunPosition;
+		const sunLightIntensityUniform = coinData[2];
+		sunLightIntensityUniform.value = sunLightIntensity;
     }
 }
 

@@ -4,6 +4,9 @@
  * úgy kell érteni, hogy ennyit változik a játékos hellyzete mindig amikor a [render loopban]{@link module:game.render} 
  * módosul.
  * <p>
+ * Mivel az első mérföldkő verziójához képest jelentősen csökkent az FPS (60-144 -> kb. 30), ezért minden sebességet a 
+ * duplájára növeltem, hogy a játékos ne 'lassuljon le' a render loop kevesebbszeri meghívása miatt.
+ * <p>
  * A játékos tud sétálni (nyilak vagy WASD), futni (bal SHIFT) és ugrani (SPACE). Egy-egy boolean változó nézi, 
  * hogy éppen melyiket csinálja (akár többet is). Ezek külön nincsenek dokumentálva.
  * @since I. mérföldkő
@@ -12,33 +15,33 @@
  */
 
 import * as SOUNDS from './sound.js';
-import { controls } from './game.js'
+import { controls, camera } from './game.js'
 
 /**
  * A játékos sebessége.
  * @constant
  */
-export const SPEED = 0.2;
+export const SPEED = 0.4;
 /**
  * A játékos sebessége futás közben.
  * @constant
  */
-export const SPRINT_SPEED = 0.5
+export const SPRINT_SPEED = 1;
 /**
  * A játékos sebessége ugrás közben.
  * @constant
  */
-export const JUMP_SPEED = 1;
+export const JUMP_SPEED = 2;
 /**
  * A játékos kezeti zuhanási sebessége. Ezt zuhanás közben növeli a [gravitáció]{@link module:collision.gravity}.
  * @constant
  */
-export const FALL_SPEED = 1;
+export const FALL_SPEED = 2;
 /**
  * Az ugrás ideje milliszekundumban.
  * @constant
  */
-export const JUMP_TIME = 500; 
+const JUMP_TIME = 500; 
 export let jumping = false; // van-e folyamatban ugrás
 export let sprinting = false; //aktív-e a sprintelés
 export let movingForward = false; //aktívak-e a mozgások
@@ -153,3 +156,4 @@ export function keyUpHandler(keyEvent) {
         break;
     }
 }
+

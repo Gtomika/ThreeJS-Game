@@ -411,7 +411,7 @@ function handleFallEnding(type, id) {
  * @returns {THREE.Mesh} A láthatatlan objektum. 
  */
 export function createInvisibleBounds(position, boundsSize) { 
-    const material = new THREE.MeshBasicMaterial();
+    const material = new THREE.MeshBasicMaterial(); //nem támogatja az árnyékolást, de kevésbé számítás igényes
     material.transparent = true;
     const boundMesh = new THREE.Mesh(new THREE.BoxGeometry(boundsSize[0], boundsSize[1], boundsSize[2]), material);
     boundMesh.position.set(position[0], position[1], position[2]);

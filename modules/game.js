@@ -13,7 +13,8 @@ import * as WORLD_BUILDING from './world_building.js';
 import * as GAMEPLAY from './gameplay.js';
 import * as SOUNDS from './sound.js';
 import { updateCoinShader } from './shaders.js';
-import { Light } from './three.module.js';
+import  * as DAY_NIGHT from './day_night.js';
+import { RenderPass, EffectPass, EffectComposer, SMAAEffect } from './postprocessing.esm.js';
 
 /**
  * Statisztikákat megjelenítő objektum, [stats.js]{@link https://github.com/mrdoob/stats.js/} használatával.
@@ -29,15 +30,15 @@ let stats;
  */
 export let renderer;
 /**
- * A kamera, ami azonos a játékossal. A játékost mozgató metódusok valójában ezt mozgatják.
- * @var
- * @type {THREE.PerspectiveCamera}
- */
-export let scene;
-/**
  * A színtér.
  * @var
  * @type {THREE.Scene}
+ */
+export let scene;
+/**
+ * A kamera, ami azonos a játékossal. A játékost mozgató metódusok valójában ezt mozgatják.
+ * @var
+ * @type {THREE.PerspectiveCamera}
  */
 export let camera;
 /**
@@ -88,21 +89,11 @@ export const arenaSize = 1000;
  * @constant
  * @private
  */
-const CAMERA_FAR = 1000; 
-/**
- * A ['nap']{@link https://threejs.org/docs/#api/en/lights/DirectionalLight} pozíciója a színtérben.
- * @constant
- * @type {THREE.Vector3}
- */
-export const SUN_POSITION = new THREE.Vector3(arenaSize,arenaSize,arenaSize*0.75);
+const CAMERA_FAR = 2 * arenaSize; 
 /**
  * [Háttérfény]{@link https://threejs.org/docs/#api/en/lights/AmbientLight} intenzitás.
  */
 export const AMBIENT_LIGHT_INTENSITY = 0.05; 
-/**
- * Napfény intenzitás.
- */
-export const SUN_LIGHT_INTENSITY = 0.8;
 
 /**
  * @summary Főmetódus
@@ -140,20 +131,7 @@ function initScene() {
     const ambientLight = new THREE.AmbientLight(0xffffff, AMBIENT_LIGHT_INTENSITY);
     scene.add(ambientLight);
 
-    //napfény szimulálása
-    const sunLight = new THREE.DirectionalLight(0xffffff, SUN_LIGHT_INTENSITY);
-    sunLight.position.set(SUN_POSITION.x, SUN_POSITION.y, SUN_POSITION.z); 
-    sunLight.castShadow = true;
-    sunLight.shadow.camera.near = 0.5; //a shadow camera méreteit ki kell nagyítani, hogy az egész színteret lefedjék
-    sunLight.shadow.camera.far = arenaSize*5;
-    sunLight.shadow.mapSize.width = arenaSize; 
-    sunLight.shadow.mapSize.height = arenaSize; 
-    sunLight.shadow.camera.right = -arenaSize;
-    sunLight.shadow.camera.left = arenaSize;
-    sunLight.shadow.camera.top = arenaSize;
-    sunLight.shadow.camera.bottom = -arenaSize;
-    scene.add(new THREE.CameraHelper(sunLight.shadow.camera)); // --> mutatja a shadow kamerát 
-    scene.add(sunLight);
+    DAY_NIGHT.initiateDayNightCycle();
 
     posDisplayer.textContent = vecToString(camera.position); //kezdeti pozíció, irány
     dirDisplayer.textContent = vecToString(camera.getWorldDirection(cameraDir));
@@ -175,9 +153,37 @@ function initScene() {
 
     GAMEPLAY.initiateUserInterface(); //hp bar, stb...
     addStats();
+    initiatePostprocessing(); //composer beállítása
     render(); //renderelés
 }
+/**
+ * A postprocessing objektumokat összefogó objektum.
+ * @var
+ * @type {EffectCommposer}
+ */
+let composer;
+/**
+ * @summary Postprocessing
+ * @description Elkészíti a posztprocessinghez szükséges ojektumokat. Ahhoz, hogy ez működjön, a 
+ * [day_night modul inicializáló metódusát]{@link module:day_night.crateLightPostprocessing} már meg kell hívni előtte.
+ * @function
+ * @since II. mérföldkő
+ */
+function initiatePostprocessing() {
+    const renderPass = new RenderPass(scene, camera);
+    const areaImage = new Image(); //anti aliasing
+    areaImage.src = SMAAEffect.areaImageDataURL;
+    const searchImage = new Image();
+    searchImage.src = SMAAEffect.searchImageDataURL;
+    const smaaEffect = new SMAAEffect(searchImage,areaImage,1);
 
+    const effectPass = new EffectPass(camera, smaaEffect, DAY_NIGHT.godRays);
+    effectPass.renderToScreen = true;
+
+    composer = new EffectComposer(renderer);
+    composer.addPass(renderPass);
+    composer.addPass(effectPass);
+}
 /**
  * @summary Poointer lock kezelés
  * @description Meghívódik ha pointer lock irányítást kikapcsolják (játékos megnyomja az escape-et, vagy meghal). Megjeleníti 
@@ -192,7 +198,6 @@ export function pointerLockUnlocked() {
     instructions.hidden = false;
     MOVE.stopMovement();
 }
-
 /**
  * @summary Környezet létrehozása
  * @description Elkészíti a színtértben a talajt és a skybox-ot.
@@ -221,7 +226,6 @@ function createBasicEnvironment() {
      floor.rotation.x = - Math.PI / 2;
      scene.add(floor);
 }
-
 /**
  * @summary FPS statisztikák
  * @description Elkészíti a statisztikákat  mutató objektumot.
@@ -236,7 +240,6 @@ function addStats() {
     stats.domElement.style.top = '0px';
     document.body.appendChild(stats.domElement);
 }
-
 /**
  * @summary Render loop
  * @description Itt történik a statisztikák frissítése, a játékos mozgatása, a gravitáció meghívása és az animációk, 
@@ -263,18 +266,19 @@ const render = function() {
     if(MOVE.jumping) { //ugrás végrehajtása
         camera.position.y += MOVE.JUMP_SPEED;
     }     
+    //gravitáció szimulálása
+    COLLISION.gravity();
+
     //az ütközések, játéktérből kilépések kezelése
     const cameraBounds = COLLISION.createCameraBounds();
     if(COLLISION.detectOutOfBounds() || COLLISION.detectCollisions(cameraBounds)) {
         MOVE.stopMovement();
     }
-    //gravitáció szimulálása
-    COLLISION.gravity();
 
-    //az 'érmék' forgatása
-    updateCoinShader();
+    //az érmék uniformjainak frissítése
+    updateCoinShader(DAY_NIGHT.sunPosition, DAY_NIGHT.sunLightIntensity);
 
-    renderer.render(scene, camera);
+    composer.render(0.1);
     requestAnimationFrame(render);
 }
 
@@ -286,7 +290,11 @@ const render = function() {
  * @param {THREE.Vector3} vector A vektor.
  */
 export function vecToString(vector) { 
-    return "("+vector.x.toFixed(2)+", "+vector.y.toFixed(2)+", "+vector.z.toFixed(2)+")";
+    if(vector.z !== undefined) {
+        return "("+vector.x.toFixed(2)+", "+vector.y.toFixed(2)+", "+vector.z.toFixed(2)+")";
+    } else {
+        return "("+vector.x.toFixed(2)+", "+vector.y.toFixed(2)+")";
+    }
 }
 
 window.addEventListener("resize", () => { //ablakméret változás kezelése
