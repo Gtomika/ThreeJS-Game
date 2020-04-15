@@ -41,6 +41,8 @@ import * as WORLD_BUILDING from './world_building.js';
 import * as GAMEPLAY from './gameplay.js';
 import * as SOUNDS from './sound.js';
 import { updateCoinShader } from './shaders.js';
+import  * as DAY_NIGHT from './day_night.js';
+import { RenderPass, EffectPass, EffectComposer, SMAAEffect } from './postprocessing.esm.js';
 
 /**
  * Statisztikákat megjelenítő objektum, [stats.js]{@link https://github.com/mrdoob/stats.js/} használatával.
@@ -56,15 +58,15 @@ let stats;
  */
 export let renderer;
 /**
- * A kamera, ami azonos a játékossal. A játékost mozgató metódusok valójában ezt mozgatják.
- * @var
- * @type {THREE.PerspectiveCamera}
- */
-export let scene;
-/**
  * A színtér.
  * @var
  * @type {THREE.Scene}
+ */
+export let scene;
+/**
+ * A kamera, ami azonos a játékossal. A játékost mozgató metódusok valójában ezt mozgatják.
+ * @var
+ * @type {THREE.PerspectiveCamera}
  */
 export let camera;
 /**
@@ -115,21 +117,11 @@ export const arenaSize = 1000;
  * @constant
  * @private
  */
-const CAMERA_FAR = 1000; 
-/**
- * A ['nap']{@link https://threejs.org/docs/#api/en/lights/DirectionalLight} pozíciója a színtérben.
- * @constant
- * @type {THREE.Vector3}
- */
-export const SUN_POSITION = new THREE.Vector3(arenaSize,500,arenaSize*0.75);
+const CAMERA_FAR = 2 * arenaSize; 
 /**
  * [Háttérfény]{@link https://threejs.org/docs/#api/en/lights/AmbientLight} intenzitás.
  */
 export const AMBIENT_LIGHT_INTENSITY = 0.05; 
-/**
- * Napfény intenzitás.
- */
-export const SUN_LIGHT_INTENSITY = 0.8;
 
 /**
  * @summary Főmetódus
@@ -153,6 +145,10 @@ function initScene() {
     renderer = new THREE.WebGLRenderer({antialias: true});
     renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    renderer.shadowMap.width = arenaSize;
+    renderer.shadowMap.height = arenaSize;
     document.getElementById('canvasContainer').appendChild(renderer.domElement);
     //const axes = new THREE.AxesHelper(100); //3D segítő
     //scene.add(axes);
@@ -163,10 +159,7 @@ function initScene() {
     const ambientLight = new THREE.AmbientLight(0xffffff, AMBIENT_LIGHT_INTENSITY);
     scene.add(ambientLight);
 
-    //napfény szimulálása
-    const sunLight = new THREE.DirectionalLight(0xffffff, SUN_LIGHT_INTENSITY);
-    sunLight.position.set(SUN_POSITION.x, SUN_POSITION.y, SUN_POSITION.z); //0,0,0-ba néz
-    scene.add(sunLight);
+    DAY_NIGHT.initiateDayNightCycle();
 
     posDisplayer.textContent = vecToString(camera.position); //kezdeti pozíció, irány
     dirDisplayer.textContent = vecToString(camera.getWorldDirection(cameraDir));
@@ -188,9 +181,37 @@ function initScene() {
 
     GAMEPLAY.initiateUserInterface(); //hp bar, stb...
     addStats();
+    initiatePostprocessing(); //composer beállítása
     render(); //renderelés
 }
+/**
+ * A postprocessing objektumokat összefogó objektum.
+ * @var
+ * @type {EffectCommposer}
+ */
+let composer;
+/**
+ * @summary Postprocessing
+ * @description Elkészíti a posztprocessinghez szükséges ojektumokat. Ahhoz, hogy ez működjön, a 
+ * [day_night modul inicializáló metódusát]{@link module:day_night.crateLightPostprocessing} már meg kell hívni előtte.
+ * @function
+ * @since II. mérföldkő
+ */
+function initiatePostprocessing() {
+    const renderPass = new RenderPass(scene, camera);
+    const areaImage = new Image(); //anti aliasing
+    areaImage.src = SMAAEffect.areaImageDataURL;
+    const searchImage = new Image();
+    searchImage.src = SMAAEffect.searchImageDataURL;
+    const smaaEffect = new SMAAEffect(searchImage,areaImage,1);
 
+    const effectPass = new EffectPass(camera, smaaEffect, DAY_NIGHT.godRays);
+    effectPass.renderToScreen = true;
+
+    composer = new EffectComposer(renderer);
+    composer.addPass(renderPass);
+    composer.addPass(effectPass);
+}
 /**
  * @summary Poointer lock kezelés
  * @description Meghívódik ha pointer lock irányítást kikapcsolják (játékos megnyomja az escape-et, vagy meghal). Megjeleníti 
@@ -205,7 +226,6 @@ export function pointerLockUnlocked() {
     instructions.hidden = false;
     MOVE.stopMovement();
 }
-
 /**
  * @summary Környezet létrehozása
  * @description Elkészíti a színtértben a talajt és a skybox-ot.
@@ -230,10 +250,10 @@ function createBasicEnvironment() {
      const floorMaterial = new THREE.MeshLambertMaterial({ map: floorTexture, side: THREE.SingleSide });
      const floorGeometry = new THREE.PlaneGeometry(arenaSize, arenaSize, 1, 1);
      const floor = new THREE.Mesh(floorGeometry, floorMaterial);
+     floor.receiveShadow = true;
      floor.rotation.x = - Math.PI / 2;
      scene.add(floor);
 }
-
 /**
  * @summary FPS statisztikák
  * @description Elkészíti a statisztikákat  mutató objektumot.
@@ -248,7 +268,6 @@ function addStats() {
     stats.domElement.style.top = '0px';
     document.body.appendChild(stats.domElement);
 }
-
 /**
  * @summary Render loop
  * @description Itt történik a statisztikák frissítése, a játékos mozgatása, a gravitáció meghívása és az animációk, 
@@ -275,18 +294,19 @@ const render = function() {
     if(MOVE.jumping) { //ugrás végrehajtása
         camera.position.y += MOVE.JUMP_SPEED;
     }     
+    //gravitáció szimulálása
+    COLLISION.gravity();
+
     //az ütközések, játéktérből kilépések kezelése
     const cameraBounds = COLLISION.createCameraBounds();
     if(COLLISION.detectOutOfBounds() || COLLISION.detectCollisions(cameraBounds)) {
         MOVE.stopMovement();
     }
-    //gravitáció szimulálása
-    COLLISION.gravity();
 
-    //az 'érmék' forgatása
-    updateCoinShader();
+    //az érmék uniformjainak frissítése
+    updateCoinShader(DAY_NIGHT.sunPosition, DAY_NIGHT.sunLightIntensity);
 
-    renderer.render(scene, camera);
+    composer.render(0.1);
     requestAnimationFrame(render);
 }
 
@@ -298,7 +318,11 @@ const render = function() {
  * @param {THREE.Vector3} vector A vektor.
  */
 export function vecToString(vector) { 
-    return "("+vector.x.toFixed(2)+", "+vector.y.toFixed(2)+", "+vector.z.toFixed(2)+")";
+    if(vector.z !== undefined) {
+        return "("+vector.x.toFixed(2)+", "+vector.y.toFixed(2)+", "+vector.z.toFixed(2)+")";
+    } else {
+        return "("+vector.x.toFixed(2)+", "+vector.y.toFixed(2)+")";
+    }
 }
 
 window.addEventListener("resize", () => { //ablakméret változás kezelése
@@ -317,13 +341,13 @@ initScene();</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-animation.html">animation</a></li><li><a href="module-collision.html">collision</a></li><li><a href="module-game.html">game</a></li><li><a href="module-gameplay.html">gameplay</a></li><li><a href="module-move.html">move</a></li><li><a href="module-shaders.html">shaders</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-world_building.html">world_building</a></li></ul><h3>Classes</h3><ul><li><a href="module-collision-CollidableInfo.html">CollidableInfo</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-animation.html">animation</a></li><li><a href="module-collision.html">collision</a></li><li><a href="module-day_night.html">day_night</a></li><li><a href="module-game.html">game</a></li><li><a href="module-gameplay.html">gameplay</a></li><li><a href="module-move.html">move</a></li><li><a href="module-shaders.html">shaders</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-world_building.html">world_building</a></li></ul><h3>Classes</h3><ul><li><a href="module-collision-CollidableInfo.html">CollidableInfo</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Sun Apr 12 2020 17:07:00 GMT+0200 (GMT+02:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed Apr 15 2020 12:35:58 GMT+0200 (GMT+02:00)
 </footer>
 
 <script> prettyPrint(); </script>

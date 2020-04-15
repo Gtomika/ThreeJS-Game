@@ -36,7 +36,8 @@
  */
 
 import { registerCollidableObject, TYPE_NORMAL, TYPE_LETHAL, TYPE_POINT, createInvisibleBounds } from './collision.js';
-import { scene, renderer, SUN_POSITION, SUN_LIGHT_INTENSITY, AMBIENT_LIGHT_INTENSITY, camera} from './game.js';
+import { scene, renderer, AMBIENT_LIGHT_INTENSITY } from './game.js';
+import { sunPosition, sunLightIntensity } from './day_night.js';
 import { RoughnessMipmapper } from './RoughnessMipmapper.js';
 import { createMovingPlatform, createMovingObstacle, createHealingObject } from './animation.js';
 import * as SHADERS from './shaders.js';
@@ -90,6 +91,8 @@ export function createBox(position, bounds, collisionType, color) {
         new THREE.MeshLambertMaterial({color: appliedColor})
     );
     mesh.position.set(position[0], position[1], position[2]);
+    mesh.castShadow = true;
+    mesh.receiveShadow = false; //a jobb FPS érdekében ez nem kap árnyékot, csak vet
     registerCollidableObject(mesh, colType);
     scene.add(mesh);
     return mesh;
@@ -117,10 +120,12 @@ function createSpikeField(center, width, length) {
         while(spikePosition[2] &lt; center[2]+length/2-SPIKE_RADIUS) { //tüskék helyezése z irányban
             const spike = new THREE.Mesh(
                 new THREE.ConeGeometry(SPIKE_RADIUS, SPIKE_HEIGHT),
-                new THREE.MeshPhongMaterial({ color: 0x7E7E7E })); //szürke
+                new THREE.MeshLambertMaterial({ color: 0x7E7E7E })); //szürke
             spike.position.x = spikePosition[0];
             spike.position.y = spikePosition[1];
             spike.position.z = spikePosition[2];
+            spike.castShadow = true;
+            spike.receiveShadow = false;
             spikesGroup.add(spike);
             spikePosition[2] += 2*SPIKE_RADIUS + SPIKE_GAP;
         }
@@ -208,6 +213,8 @@ function loadModel(path, scale = 1, positionArray = [0, 0, 0], collisionData = u
         gltf.scene.position.set(positionArray[0], positionArray[1], positionArray[2]);
         gltf.scene.traverse( function (child) {
             if (child.isMesh) {
+                child.castShadow = true;
+                child.receiveShadow = false; //a jobb FPS érdekében ez nem kap árnyékot, csak vet
                 roughnessMipmapper.generateMipmaps(child.material);
                 if(rotate) {
                     child.rotation.z += Math.PI/2;
@@ -281,8 +288,8 @@ function createCoin(x, y, z) {
     const coinUniforms = { 
         angle: { type: 'float', value: 0.0 }, //ez majd változtatva lesz
         ambientLightIntensity: { type: 'float', value: AMBIENT_LIGHT_INTENSITY},
-        sunPosition: { type: 'vec3', value: SUN_POSITION },
-        sunLightIntensity: { type: 'float', value: SUN_LIGHT_INTENSITY },
+        sunPosition: { type: 'vec3', value: sunPosition },
+        sunLightIntensity: { type: 'float', value: sunLightIntensity },
         coinShininess: { type: 'float', value: COIN_SHININESS}
     }
     const coinMaterial = new THREE.ShaderMaterial({
@@ -293,8 +300,10 @@ function createCoin(x, y, z) {
         fragmentShader: SHADERS.coinFragmentShader()
     });
     const coinGeometry = new THREE.TorusGeometry(5, 2, 8, 30);
-    SHADERS.saveCoinData(coinUniforms.angle, coinGeometry); //ezeket később frissíteni kell
+    SHADERS.saveCoinData(coinUniforms.angle, coinUniforms.sunPosition, coinUniforms.sunLightIntensity); //ezeket később frissíteni kell
     const coinMesh = new THREE.Mesh(coinGeometry, coinMaterial);
+    coinMesh.castShadow = true; //sajnos ezek árnyéka nem forog az érmével együtt
+    coinMesh.receiveShadow = false; //a jobb FPS érdekében ez nem kap árnyékot, csak vet
     coinMesh.position.set(x, y, z);
     registerCollidableObject(coinMesh, TYPE_POINT, true); //ütközéskor el lesz távolítva
     scene.add(coinMesh);
@@ -338,13 +347,13 @@ function createCoinHelperText() {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-animation.html">animation</a></li><li><a href="module-collision.html">collision</a></li><li><a href="module-game.html">game</a></li><li><a href="module-gameplay.html">gameplay</a></li><li><a href="module-move.html">move</a></li><li><a href="module-shaders.html">shaders</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-world_building.html">world_building</a></li></ul><h3>Classes</h3><ul><li><a href="module-collision-CollidableInfo.html">CollidableInfo</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-animation.html">animation</a></li><li><a href="module-collision.html">collision</a></li><li><a href="module-day_night.html">day_night</a></li><li><a href="module-game.html">game</a></li><li><a href="module-gameplay.html">gameplay</a></li><li><a href="module-move.html">move</a></li><li><a href="module-shaders.html">shaders</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-world_building.html">world_building</a></li></ul><h3>Classes</h3><ul><li><a href="module-collision-CollidableInfo.html">CollidableInfo</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Sun Apr 12 2020 17:07:00 GMT+0200 (GMT+02:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed Apr 15 2020 12:35:58 GMT+0200 (GMT+02:00)
 </footer>
 
 <script> prettyPrint(); </script>

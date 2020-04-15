@@ -38,7 +38,7 @@
     <div class="container-overview">
     
         
-            <div class="description">Ebben a modulban vannak a mogással kapcsolatos komponensek. Több 'sebesség' változó is van itt. Ezeket úgy kell érteni, hogy ennyit változik a játékos hellyzete mindig amikor a render loopban módosul.<p>A játékos tud sétálni (nyilak vagy WASD), futni (bal SHIFT) és ugrani (SPACE). Egy-egy boolean változó nézi, hogy éppen melyiket csinálja (akár többet is). Ezek külön nincsenek dokumentálva.</div>
+            <div class="description">Ebben a modulban vannak a mogással kapcsolatos komponensek. Több 'sebesség' változó is van itt. Ezeket úgy kell érteni, hogy ennyit változik a játékos hellyzete mindig amikor a render loopban módosul.<p>Mivel az első mérföldkő verziójához képest jelentősen csökkent az FPS (60-144 -> kb. 30), ezért minden sebességet a duplájára növeltem, hogy a játékos ne 'lassuljon le' a render loop kevesebbszeri meghívása miatt.<p>A játékos tud sétálni (nyilak vagy WASD), futni (bal SHIFT) és ugrani (SPACE). Egy-egy boolean változó nézi, hogy éppen melyiket csinálja (akár többet is). Ezek külön nincsenek dokumentálva.</div>
         
 
         
@@ -192,7 +192,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="move.js.html">move.js</a>, <a href="move.js.html#line36">line 36</a>
+        <a href="move.js.html">move.js</a>, <a href="move.js.html#line39">line 39</a>
     </li></ul></dd>
     
 
@@ -254,69 +254,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="move.js.html">move.js</a>, <a href="move.js.html#line31">line 31</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-        
-            
-<h4 class="name" id=".JUMP_TIME"><span class="type-signature">(static, constant) </span>JUMP_TIME<span class="type-signature"></span></h4>
-
-
-
-
-<div class="description">
-    Az ugrás ideje milliszekundumban.
-</div>
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="move.js.html">move.js</a>, <a href="move.js.html#line41">line 41</a>
+        <a href="move.js.html">move.js</a>, <a href="move.js.html#line34">line 34</a>
     </li></ul></dd>
     
 
@@ -378,7 +316,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="move.js.html">move.js</a>, <a href="move.js.html#line21">line 21</a>
+        <a href="move.js.html">move.js</a>, <a href="move.js.html#line24">line 24</a>
     </li></ul></dd>
     
 
@@ -440,7 +378,69 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="move.js.html">move.js</a>, <a href="move.js.html#line26">line 26</a>
+        <a href="move.js.html">move.js</a>, <a href="move.js.html#line29">line 29</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="~JUMP_TIME"><span class="type-signature">(inner, constant) </span>JUMP_TIME<span class="type-signature"></span></h4>
+
+
+
+
+<div class="description">
+    Az ugrás ideje milliszekundumban.
+</div>
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="move.js.html">move.js</a>, <a href="move.js.html#line44">line 44</a>
     </li></ul></dd>
     
 
@@ -574,7 +574,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="move.js.html">move.js</a>, <a href="move.js.html#line77">line 77</a>
+        <a href="move.js.html">move.js</a>, <a href="move.js.html#line80">line 80</a>
     </li></ul></dd>
     
 
@@ -716,7 +716,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="move.js.html">move.js</a>, <a href="move.js.html#line125">line 125</a>
+        <a href="move.js.html">move.js</a>, <a href="move.js.html#line128">line 128</a>
     </li></ul></dd>
     
 
@@ -809,7 +809,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="move.js.html">move.js</a>, <a href="move.js.html#line60">line 60</a>
+        <a href="move.js.html">move.js</a>, <a href="move.js.html#line63">line 63</a>
     </li></ul></dd>
     
 
@@ -855,13 +855,13 @@
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-animation.html">animation</a></li><li><a href="module-collision.html">collision</a></li><li><a href="module-game.html">game</a></li><li><a href="module-gameplay.html">gameplay</a></li><li><a href="module-move.html">move</a></li><li><a href="module-shaders.html">shaders</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-world_building.html">world_building</a></li></ul><h3>Classes</h3><ul><li><a href="module-collision-CollidableInfo.html">CollidableInfo</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-animation.html">animation</a></li><li><a href="module-collision.html">collision</a></li><li><a href="module-day_night.html">day_night</a></li><li><a href="module-game.html">game</a></li><li><a href="module-gameplay.html">gameplay</a></li><li><a href="module-move.html">move</a></li><li><a href="module-shaders.html">shaders</a></li><li><a href="module-sound.html">sound</a></li><li><a href="module-world_building.html">world_building</a></li></ul><h3>Classes</h3><ul><li><a href="module-collision-CollidableInfo.html">CollidableInfo</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Sun Apr 12 2020 17:07:00 GMT+0200 (GMT+02:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed Apr 15 2020 12:35:58 GMT+0200 (GMT+02:00)
 </footer>
 
 <script> prettyPrint(); </script>
