@@ -30,7 +30,7 @@ Web szerverrel kell használni, vagy a böngésző nem fogja betölteni a textú
 Mielőtt elkezdjük a pointer lockot és a fullsceent használni, érdemes 
 megvárni, hogy az oldal teljesen betöltsön. Ezután célszerű egyszer teljesen körbefordulni, 
 hogy minden színtéren lévő modell is betöltsön. Amíg ezek nem történnek meg, addig 
-nagyon fog akadni, utána kb 30 FPS várható.
+nagyon fog akadni, utána kb 30 FPS várható (20-25 fullscreen módban).
 
 # English
 

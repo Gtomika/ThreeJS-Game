@@ -21,17 +21,17 @@ import { controls, camera } from './game.js'
  * A játékos sebessége.
  * @constant
  */
-export const SPEED = 0.4;
+export const SPEED = 0.8;
 /**
  * A játékos sebessége futás közben.
  * @constant
  */
-export const SPRINT_SPEED = 1;
+export const SPRINT_SPEED = 1.5;
 /**
  * A játékos sebessége ugrás közben.
  * @constant
  */
-export const JUMP_SPEED = 2;
+export const JUMP_SPEED = 2.5;
 /**
  * A játékos kezeti zuhanási sebessége. Ezt zuhanás közben növeli a [gravitáció]{@link module:collision.gravity}.
  * @constant

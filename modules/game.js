@@ -143,6 +143,16 @@ function initScene() {
         instructions.hidden = true;
     }, false );
     controls.addEventListener('unlock', pointerLockUnlocked); //pointer lock kikapcsolás kezelése
+    const fullscreenButton = document.getElementById('fullscreenImage');
+    fullscreenButton.addEventListener('click', function() {
+        if(document.fullscreenEnabled && document.body.fullscreenElement == null) {
+            document.body.requestFullscreen();
+        } else if(document.fullscreenEnabled) {
+            document.exitFullscreen();
+        } else {
+            console.log("Full screen nem elérhető.");
+        }
+    });
     
     window.addEventListener('keydown', MOVE.keyDownHandler); //billentyűzetkezelés hozzáadása
     window.addEventListener('keyup', MOVE.keyUpHandler);
