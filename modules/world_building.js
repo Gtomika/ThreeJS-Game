@@ -164,6 +164,13 @@ export function addModels() {
     loadModel('fence', 1.55, [25,0,405], {boundsSize: [10,100,70], type: TYPE_NORMAL}, true);
     loadModel('fence', 1.55, [25,0,480], {boundsSize: [10,100,70], type: TYPE_NORMAL}, true);
 
+    loadModel('palace_of_culture', 2.5, [-300,75,-720]); //háttér épületek
+
+    loadModel('grass_1', 0.5, [-120,0,-30]); //extra növényzet
+    loadModel('grass_1', 0.5, [-60,0,150]);
+    loadModel('grass_1', 0.5, [210,0,10]);
+    loadModel('grass_1', 0.5, [110,0,300]);
+    loadModel('grass_1', 0.5, [140,0,-300]);
     roughnessMipmapper.dispose();
 }
 
@@ -180,7 +187,7 @@ export function addModels() {
  * tulajdonságait adja meg. Ha nincs megadva, akkor a modell nem kerül az ütközésdetektálásba.
  * @param {boolean} [rotate = false] Opcionális, ha igaz, akkor 90 fokkal forgatja az objektumot az z tengely mentén. 
  */
-function loadModel(path, scale = 1, positionArray = [0, 0, 0], collisionData = undefined, rotate = false) { 
+export function loadModel(path, scale = 1, positionArray = [0, 0, 0], collisionData = undefined, rotate = false) { 
     gltfLoader.load('models/'+path+'/scene.gltf', function ( gltf ) {  
         gltf.scene.position.set(positionArray[0], positionArray[1], positionArray[2]);
         gltf.scene.traverse( function (child) {
@@ -240,6 +247,9 @@ export function addCoins() {
     createCoin(383,10,269); //radioaktív területen
     createCoin(410,10,243); //radioaktív területen
     createCoin(350,20,236); //radioaktív területen
+
+    createCoin(-180,10,-460); //palace of culture
+    createCoin(-220,10,-460);
 
     document.getElementById('coinCounter').textContent = 'Érmék: 0/' + maximumCoins; //számoló szöveg inicializálása 
 }

@@ -103,7 +103,7 @@ canvas {
     border-color: black;
 }
 
-#musicSoundImage {
+.icon {
     width: 60px;
     height: 60px;
 }
@@ -135,4 +135,16 @@ canvas {
     border-radius: 5px;
     font-size: larger;
     border-color: black;
+}
+
+#timeSpeedup {
+    position: absolute;
+    z-index: 100;
+    width: 60px;
+    height: 60px;
+    top: 2%;
+    left: 20%;
+    background-color: cornflowerblue;
+    border-radius: 5px;
+    border-color: black;   
 }

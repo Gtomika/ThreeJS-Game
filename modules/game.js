@@ -205,22 +205,14 @@ export function pointerLockUnlocked() {
  * @since I. mérföldkő.
  */
 function createBasicEnvironment() {
-    const loader = new THREE.CubeTextureLoader();
-    loader.setPath('img/');
-    const skyboxGeometry = loader.load([ 
-        'miramar_lf.png','miramar_rt.png', //x irány
-        'miramar_up.png','miramar_dn.png', //y irány
-        'miramar_ft.png','miramar_bk.png'] //z irány
-    );
-    scene.background = skyboxGeometry;
-
      //talaj
      const textureLoader = new THREE.TextureLoader();
      const floorTexture = textureLoader.load('img/Ground.jpg');
      floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
      floorTexture.repeat.set(10,10);
      const floorMaterial = new THREE.MeshLambertMaterial({ map: floorTexture, side: THREE.SingleSide });
-     const floorGeometry = new THREE.PlaneGeometry(arenaSize, arenaSize, 1, 1);
+     //nagyobb mint a bejárható terület, hogy a játékos ne lássa a 'világ szélét'
+     const floorGeometry = new THREE.PlaneGeometry(arenaSize*2, arenaSize*2, 1, 1);
      const floor = new THREE.Mesh(floorGeometry, floorMaterial);
      floor.receiveShadow = true;
      floor.rotation.x = - Math.PI / 2;

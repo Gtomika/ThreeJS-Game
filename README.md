@@ -27,8 +27,10 @@ Ha erre a verzióra van szükség akkor:
 
 Web szerverrel kell használni, vagy a böngésző nem fogja betölteni a textúrákat.
 
-Miután betöltött az oldal, érdemes egyszer teljesen körbefordulni, hogy minden modellt betöltsön. Ekkor 
-nagyon fog akadni, de csak néhány másodpercre.
+Mielőtt elkezdjük a pointer lockot és a fullsceent használni, érdemes 
+megvárni, hogy az oldal teljesen betöltsön. Ezután célszerű egyszer teljesen körbefordulni, 
+hogy minden színtéren lévő modell is betöltsön. Amíg ezek nem történnek meg, addig 
+nagyon fog akadni, utána kb 30 FPS várható.
 
 # English
 
@@ -40,4 +42,5 @@ git clone https://github.com/Gtomika/ThreeJS-Game.git
 
 (Don't just download ZIP, won't work, because of git LFS.)
 
-Use with a local web server, or the browser won't be able to load the textures.
+Use with a local web server, or the browser won't be able to load the textures. Wait until the page 
+fully loads before starting to use, then completely turn around to force all models in the scene to load.

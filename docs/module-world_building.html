@@ -192,7 +192,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="world_building.js.html">world_building.js</a>, <a href="world_building.js.html#line211">line 211</a>
+        <a href="world_building.js.html">world_building.js</a>, <a href="world_building.js.html#line218">line 218</a>
     </li></ul></dd>
     
 
@@ -421,7 +421,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="world_building.js.html">world_building.js</a>, <a href="world_building.js.html#line220">line 220</a>
+        <a href="world_building.js.html">world_building.js</a>, <a href="world_building.js.html#line227">line 227</a>
     </li></ul></dd>
     
 
@@ -912,6 +912,310 @@
     
 
     
+    <h4 class="name" id=".loadModel"><span class="type-signature">(static) </span>loadModel<span class="signature">(path, scale, positionArray, collisionData<span class="signature-attributes">opt</span>, rotate<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+    
+
+    
+    <p class="summary">Modell betöltése</p>
+    
+
+
+
+<div class="description">
+    Betölt egy gltf modellt.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>path</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">A modell elérési útvonala. A models mappát és a scene.gltf fájlt nem kell megadni, mert az minden modellnél ugyanaz.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>scale</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">number</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Megadja, hogy mennyire legyen felskálázva a modell.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>positionArray</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;number></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">A modell pozíciója (x, y, z).</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>collisionData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">dictionary</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Egy opcionális dictionary, ami a modell ütközésdetektálási tulajdonságait adja meg. Ha nincs megadva, akkor a modell nem kerül az ütközésdetektálásba.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>rotate</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    false
+                
+                </td>
+            
+
+            <td class="description last">Opcionális, ha igaz, akkor 90 fokkal forgatja az objektumot az z tengely mentén.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+    <dt class="tag-since">Since:</dt>
+    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="world_building.js.html">world_building.js</a>, <a href="world_building.js.html#line190">line 190</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
     <h4 class="name" id="~createCoin"><span class="type-signature">(inner) </span>createCoin<span class="signature">(x, y, z)</span><span class="type-signature"></span></h4>
     
 
@@ -1064,7 +1368,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="world_building.js.html">world_building.js</a>, <a href="world_building.js.html#line259">line 259</a>
+        <a href="world_building.js.html">world_building.js</a>, <a href="world_building.js.html#line269">line 269</a>
     </li></ul></dd>
     
 
@@ -1157,7 +1461,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="world_building.js.html">world_building.js</a>, <a href="world_building.js.html#line292">line 292</a>
+        <a href="world_building.js.html">world_building.js</a>, <a href="world_building.js.html#line302">line 302</a>
     </li></ul></dd>
     
 
@@ -1395,312 +1699,6 @@
 
 
         
-            
-
-    
-
-    
-    <h4 class="name" id="~loadModel"><span class="type-signature">(inner) </span>loadModel<span class="signature">(path, scale, positionArray, collisionData<span class="signature-attributes">opt</span>, rotate<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
-    
-
-    
-    <p class="summary">Modell betöltése</p>
-    
-
-
-
-<div class="description">
-    Betölt egy gltf modellt.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>path</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">A modell elérési útvonala. A models mappát és a scene.gltf fájlt nem kell megadni, mert az minden modellnél ugyanaz.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>scale</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">number</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    1
-                
-                </td>
-            
-
-            <td class="description last">Megadja, hogy mennyire legyen felskálázva a modell.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>positionArray</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">Array.&lt;number></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">A modell pozíciója (x, y, z).</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>collisionData</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">dictionary</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Egy opcionális dictionary, ami a modell ütközésdetektálási tulajdonságait adja meg. Ha nincs megadva, akkor a modell nem kerül az ütközésdetektálásba.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>rotate</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    false
-                
-                </td>
-            
-
-            <td class="description last">Opcionális, ha igaz, akkor 90 fokkal forgatja az objektumot az z tengely mentén.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-    <dt class="tag-since">Since:</dt>
-    <dd class="tag-since"><ul class="dummy"><li>I. mérföldkő</li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="world_building.js.html">world_building.js</a>, <a href="world_building.js.html#line183">line 183</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
     
 
     
@@ -1722,7 +1720,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Wed Apr 15 2020 12:35:58 GMT+0200 (GMT+02:00)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.4</a> on Tue Apr 28 2020 11:02:18 GMT+0200 (GMT+02:00)
 </footer>
 
 <script> prettyPrint(); </script>
