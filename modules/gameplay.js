@@ -1,6 +1,8 @@
 /**
  * @summary Játékmenet modul
- * @file Itt találhatóak a játékos életpontjait módosító metódusok.
+ * @file Itt találhatóak a játékmenetet vezérlő metódusok, pl a játékos életpontjait módosítóak. Itt van kezelve a 
+ * 'deadzone', amibe a játékos akkor kerül, ha elhagyja a bejárható teret (arenaSize*arenaSize az origó körül). Ilyenkor 
+ * egy figyelmeztető felirat jelenik meg és a játékos másodpercenkénti sebzést szenved.
  * @module gameplay
  * @since I. mérföldkő
  * @author Gáspár Tamás
@@ -71,20 +73,17 @@ export function damage(amount, deathMessage='Meghaltál') {
 
 /**
  * @summary Gyógyítás
- * @description Gyógyítja a játékost.
+ * @description Gyógyítja a játékost. Ez független a sebezhetetlenségtől.
  * @function
  * @since I. mérföldkő
  * @param {int} amount Gyógyítás mértéke. 
  * @param {boolean} playSound Megmondja, hogy legyen-e [gyógyító hang]{@link module:sound.playHealSound} lejátszva. 
  */
 export function heal(amount, playSound = true) { //adott méretű gyógyítást okoz
-    if(!invulnerable) {
-        healthPoints = Math.min(MAX_HP, healthPoints + amount);
-        setHealthBar(healthPoints);
-        invulnerable = true;
-        window.setTimeout(() => invulnerable=false, INVUL_TIME)
-        if(playSound) SOUNDS.playHealSound();
-    } else return;
+    healthPoints = Math.min(MAX_HP, healthPoints + amount);
+    setHealthBar(healthPoints);
+    window.setTimeout(() => invulnerable=false, INVUL_TIME)
+    if(playSound) SOUNDS.playHealSound();    
 }
 /**
  * Ennyi időnként történik passzív HP regeneráció ('tick').
@@ -216,4 +215,37 @@ export function coinFound() {
     }
     playCoinFoundSound();
 }
-
+/**
+ * A deadzone részre figyelmeztető felirat.
+ * @constant
+ * @type {HTMLElement}
+ */
+const deadzoneMessage = document.getElementById('deadzoneMessage');
+/**
+ * Ennyit sebződik másodpercenként a játékos a deadzone-ban.
+ * @constant
+ */
+const DEADZONE_DAMAGE = 200;
+/**
+ * @summary Deadzone
+ * @description Meghívódik, ha a játékos a deadzone-ban tartózkodik.
+ * @function
+ * @callback
+ * @since II. mérföldkő
+ */
+export function inDeadzone() {
+    deadzoneMessage.style.visibility = 'visible';
+    damage(DEADZONE_DAMAGE, "Megölt a halálzóna!");
+    SOUNDS.playDeadzoneSound();
+}
+/**
+ * @summary Deadzone
+ * @description Meghívódik, ha a játékos nincs a deadzone-ban.
+ * @function
+ * @callback
+ * @since II. mérföldkő
+ */
+export function notInDeadzone() {
+    deadzoneMessage.style.visibility = 'hidden';
+    SOUNDS.stopDeadzoneSound();
+}

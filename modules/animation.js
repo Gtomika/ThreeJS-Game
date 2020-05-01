@@ -106,16 +106,20 @@ export function createMovingPlatform(position, bounds, axis, fromTo, time) {
     } else {
         throw 'Invalid axis for moving platform!';
     }
-    let previousPosition = (axis === 'X') ? box.position.x : box.position.z; //ebből számolja majd a megtett távolságot
+    let previousPosition; //ebből számolja majd a megtett távolságot
     const handlePlayerOnPlatform = function() {
         if(box.id == platformId) { //a játékos ezen a platformon áll.
             if(axis === 'X') {
-                const distance = previousPosition - box.position.x; //nem igazán távolság, mert negatív is lehet
-                camera.position.x -= distance; //játékos mozgatása
+                if(previousPosition != undefined) {
+                    const distance = previousPosition - box.position.x; //nem igazán távolság, mert negatív is lehet
+                    camera.position.x -= distance; //játékos mozgatása
+                }
                 previousPosition = box.position.x; //'előző' pozíció frissítése
             } else {
-                const distance = previousPosition - box.position.z;
-                camera.position.z -= distance;
+                if(previousPosition != undefined) {
+                    const distance = previousPosition - box.position.z;
+                    camera.position.z -= distance;
+                }
                 previousPosition = box.position.z; //'előző' pozíció frissítése
             }
         }

@@ -11,7 +11,7 @@ import { listener } from './game.js';
 import * as THREE from './three.module.js';
 
 //globális hangok
-let coinSound, walkSound, runSound, jumpSound, deathSound, healSound, damageSound, music;
+let coinSound, walkSound, runSound, jumpSound, deathSound, healSound, damageSound, music, deadzone;
 
 //pozicionált hangok, ezeket hozzá kell adni objektumokhoz
 let radioactivitySound;
@@ -33,6 +33,7 @@ export function loadSounds() {
     damageSound = new THREE.Audio(listener);
     healSound = new THREE.Audio(listener);
     music = new THREE.Audio(listener);
+    deadzone = new THREE.Audio(listener);
     radioactivitySound = new THREE.PositionalAudio(listener);
 
     const audioLoader = new THREE.AudioLoader();
@@ -75,8 +76,11 @@ export function loadSounds() {
         radioactivitySound.setRefDistance(6);
         radioactivitySound.play();
     });
+    audioLoader.load('sounds/deadzone.wav', function(buffer) {
+        deadzone.setBuffer(buffer);
+        deadzone.setVolume(1.0);
+    });
 }
-
 /**
  * Tárolja, hogy le van-e némítva a zene.
  * @default
@@ -196,4 +200,22 @@ export function playDeathSound() {
  */
 export function attachRadioactivitySound(mesh) {
     mesh.add(radioactivitySound);
+}
+/**
+ * @summary Hangok
+ * @description Lejátssza a deadzone hangot ha még nem aktív.
+ * @function
+ * @since II. mérföldkő
+ */
+export function playDeadzoneSound() {
+    if(!deadzone.isPlaying) deadzone.play();
+}
+/**
+ * @summary Hangok
+ * @description Megállítja a deadzone hangot ha még nem aktív.
+ * @function
+ * @since II. mérföldkő
+ */
+export function stopDeadzoneSound() {
+    if(deadzone.isPlaying) deadzone.pause();
 }

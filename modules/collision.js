@@ -34,22 +34,8 @@ import { standOnPlatform } from './animation.js';
  */
 const PUSH_DISTANCE = 0.2;
 /**
- * Ennyi időnként (milliszekundumban) jelenhet meg figyelmeztetés, ha a játékos elhagyja a játékteret.
- * @constant
- * @private
- */
-const OUT_OF_BOUNDS_WARNING_TIME = 20000;
-/**
- * Csak akkor jelenik meg figyelmeztetés, ha ez igaz.
- * @var
- * @private
- * @default
- */
-let showOutOfBoundsWarning = true;
-
-/**
  * @summary Játékterület detektálás
- * @description Ellenőrzi, hogy a játékos a játékterületen belül van-e. Ha nincs, akkor visszamozdítja.
+ * @description Ellenőrzi, hogy a játékos a játékterületen belül van-e.
  * @function
  * @since I. mérföldkő
  * @returns {boolean} Igaz, ha a játékos kilépett a játékterületről.
@@ -58,25 +44,16 @@ export function detectOutOfBounds() {
     const x = camera.position.x, z = camera.position.z;
     let outOfBounds = false;
     if(x > arenaSize/2) { //pozitív x irányban
-        camera.position.x -= PUSH_DISTANCE;
         outOfBounds = true;
     } else if(x < -arenaSize/2) { //negatív x irányban
-        camera.position.x += PUSH_DISTANCE;
         outOfBounds = true;
     } else if(z > arenaSize/2) { //pozitív z irányban
-        camera.position.z -= PUSH_DISTANCE;
         outOfBounds = true;
     } else if(z < -arenaSize/2) { //negatív z irányban
-        camera.position.z += PUSH_DISTANCE;
         outOfBounds = true;
     }
-    if(outOfBounds && showOutOfBoundsWarning) { //figyelmeztetés
-        showOutOfBoundsWarning = false;
-        window.setTimeout(function(){ showOutOfBoundsWarning=true; }, OUT_OF_BOUNDS_WARNING_TIME);
-        alert('Nem hagyhatod el a játékterületet!');
-    } 
+    return outOfBounds;
 }
-
 /**
  * Alapértelmezett ütközésdetektálási típus. Ha ezzel ütközik a játékos, akkor semmi nem fog történni.
  * @constant
@@ -143,7 +120,7 @@ class CollidableInfo {
         } else if(this.type === TYPE_MOVING_OBSTACLE) { 
             const cameraBounds = createCameraBounds();
             //nagyobb pushout távolság kell, különben a gyorsan mozgó objektumok 'átmennek' a játékoson
-            pushOut(cameraBounds, this.boundingBox, 12*PUSH_DISTANCE, PRIORITY_XZ); 
+            pushOut(cameraBounds, this.boundingBox, 15*PUSH_DISTANCE, PRIORITY_XZ); 
             return false; //hogy a megívó függvény ne mozgassa újra a játékost
         } else if(this.type === TYPE_MOVING_PLATFORM) {
             return true;
@@ -323,6 +300,8 @@ export function pushOut(cameraBounds, boundingBox, distance, priority) {
                  center.y > camera.position.y ? camera.position.y -= distance : camera.position.y += distance;
              }
          }
+    } else {
+        console.log("Priority unknown");
     }
 }
 

@@ -273,8 +273,13 @@ const render = function() {
 
     //az ütközések, játéktérből kilépések kezelése
     const cameraBounds = COLLISION.createCameraBounds();
-    if(COLLISION.detectOutOfBounds() || COLLISION.detectCollisions(cameraBounds)) {
+    if(COLLISION.detectCollisions(cameraBounds)) {
         MOVE.stopMovement();
+    }
+    if(COLLISION.detectOutOfBounds()) { //deadzone kezelése
+        GAMEPLAY.inDeadzone();
+    } else {
+        GAMEPLAY.notInDeadzone();
     }
 
     //az érmék uniformjainak frissítése

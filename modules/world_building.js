@@ -33,10 +33,22 @@ export function addObjects() {
     createBox([130,40,15],[20,10,20]);
     createBox([150,65,-12],[20,10,20]);
     createBox([140,80,-90],[30,10,100]); //efelett megy az animált akadály, alatta spike field
-    createMovingObstacle([180,100,-90],[10,30,30], 'X', [180,100], 3000);
+    createMovingObstacle([180,100,-90],[10,30,30], 'X', [180,100], 4000);
     createSpikeField([140,0,-90],150,60);
     createMovingPlatform([130,90,-170], [30,5,30], 'X', [130,50], 5000);
     createBox([10,100,-140],[40,10,40]);
+
+    createSpikeField([440,0,-230], 30, 5); //2. pálya elemei
+    createSpikeField([440,0,-173], 30, 5);
+    createSpikeField([460,0,-210], 5, 30);
+    createBox([330,10,-370],[20,20,20]);
+    createBox([385,40,-370],[50,5,20]);
+    createBox([440,40,-350],[20,5,50]);
+    createMovingPlatform([440,40,-250],[20,5,30], 'Z', [-250,-300], 5000);
+    const roofBound = createInvisibleBounds([440,50,-200],[40,5,40]); //kapu teteje egyébként nincs benne
+    registerCollidableObject(roofBound, TYPE_NORMAL);
+    createBox([440,60,-150],[40,5,40]);
+    createHealingObject(440,10,-25);
 }
 
 /**
@@ -164,7 +176,13 @@ export function addModels() {
     loadModel('fence', 1.55, [25,0,405], {boundsSize: [10,100,70], type: TYPE_NORMAL}, true);
     loadModel('fence', 1.55, [25,0,480], {boundsSize: [10,100,70], type: TYPE_NORMAL}, true);
 
-    loadModel('palace_of_culture', 2.5, [-300,75,-720]); //háttér épületek
+    loadModel('palace_of_culture', 2.5, [-300,75,-720], {boundsSize: [150,100,150], type: TYPE_LETHAL}); //háttér épületek
+
+    loadModel('ruined_house', 2.3, [400,45,-200], {boundsSize: [60,40,290], type: TYPE_NORMAL}); // 2. pálya
+    const leftBounds = createInvisibleBounds([340,45,-200],[5,100,290]); //kell mert a házra illesztett doboz valamiért el van csúszva
+    registerCollidableObject(leftBounds, TYPE_NORMAL);
+    loadModel('radioactive_barrel',0.7, [410,0,-30], {boundsSize: [5,10,5],type: 'DAMAGE-100-STOP'});
+    loadModel('radioactive_barrel',0.7, [360,0,-10], {boundsSize: [5,10,5],type: 'DAMAGE-100-STOP'});
 
     loadModel('grass_1', 0.5, [-120,0,-30]); //extra növényzet
     loadModel('grass_1', 0.5, [-60,0,150]);
@@ -173,7 +191,6 @@ export function addModels() {
     loadModel('grass_1', 0.5, [140,0,-300]);
     roughnessMipmapper.dispose();
 }
-
 /**
  * @summary Modell betöltése
  * @description Betölt egy gltf modellt.
@@ -216,7 +233,6 @@ export function loadModel(path, scale = 1, positionArray = [0, 0, 0], collisionD
  * @var
  */
 export let maximumCoins = 0;
-
 /**
  * @summary Érmék hozzáadása
  * @description Hozzáadja a színtérhez a gyűjtendő érméket. A hozzáadás után inicializálja az UI 
@@ -250,6 +266,15 @@ export function addCoins() {
 
     createCoin(-180,10,-460); //palace of culture
     createCoin(-220,10,-460);
+
+    createCoin(437,10,-200);  // 2. pálya
+    createCoin(378,10,-20);
+    createCoin(437,10,-120);
+    createCoin(332,10,-300);
+    createCoin(332,10,-124);
+    createCoin(365,55,-372);
+    createCoin(440,60,-200);
+    createCoin(440,70,-150);
 
     document.getElementById('coinCounter').textContent = 'Érmék: 0/' + maximumCoins; //számoló szöveg inicializálása 
 }

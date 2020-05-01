@@ -22,7 +22,7 @@ import { GodRaysEffect } from './postprocessing.esm.js';
 /**
  * A kezdeti játékbeli idő. Tetszőlegesen állítható (csak valódi óra-perc-másodperc hármasra).
  */
-const startingTime = {hour: 12, minute: 0, second: 0};
+const startingTime = {hour: 16, minute: 0, second: 0};
 let fastTime = false; //segéd
 /**
  * Megmondja, hogy hány másodperc teljen el a játékban, amíg a valóságban 1 másodperc telik el.
