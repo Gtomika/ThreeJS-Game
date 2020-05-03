@@ -210,7 +210,8 @@ export function pointerLockUnlocked() {
 }
 /**
  * @summary Környezet létrehozása
- * @description Elkészíti a színtértben a talajt és a skybox-ot.
+ * @description Elkészíti a színtértben a talajt és a skybox-ot. Ezen kícül hozzáadja azokat az átlátszó (és átjárható) 
+ * falakat, amik a bejárható terület és a 'deadzone' között vannak.
  * @function
  * @since I. mérföldkő.
  */
@@ -227,6 +228,26 @@ function createBasicEnvironment() {
      floor.receiveShadow = true;
      floor.rotation.x = - Math.PI / 2;
      scene.add(floor);
+
+    //A játékteret jelölő falak
+    const xMinusEdge = new THREE.Mesh(new THREE.PlaneGeometry(arenaSize,250,1,1),
+        new THREE.MeshLambertMaterial({color: 0xC0C0C0, transparent: true, opacity: 0.5, side: THREE.DoubleSide}));
+    xMinusEdge.position.set(-arenaSize/2,0,0);
+    xMinusEdge.rotation.y = Math.PI/2;
+    scene.add(xMinusEdge);
+    const xPlusEdge = new THREE.Mesh(new THREE.PlaneGeometry(arenaSize,250,1,1),
+        new THREE.MeshLambertMaterial({color: 0xC0C0C0, transparent: true, opacity: 0.5, side: THREE.DoubleSide}));
+    xPlusEdge.position.set(arenaSize/2,0,0);
+    xPlusEdge.rotation.y = Math.PI/2;
+    scene.add(xPlusEdge);
+    const zMinusEdge = new THREE.Mesh(new THREE.PlaneGeometry(arenaSize,250,1,1),
+        new THREE.MeshLambertMaterial({color: 0xC0C0C0, transparent: true, opacity: 0.5, side: THREE.DoubleSide}));
+    zMinusEdge.position.set(0,0,-arenaSize/2);
+    scene.add(zMinusEdge);
+    const zPlusEdge = new THREE.Mesh(new THREE.PlaneGeometry(arenaSize,250,1,1),
+        new THREE.MeshLambertMaterial({color: 0xC0C0C0, transparent: true, opacity: 0.5, side: THREE.DoubleSide}));
+    zPlusEdge.position.set(0,0,arenaSize/2);
+    scene.add(zPlusEdge);
 }
 /**
  * @summary FPS statisztikák

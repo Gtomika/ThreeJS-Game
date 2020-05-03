@@ -38,6 +38,8 @@ export function addObjects() {
     createMovingPlatform([130,90,-170], [30,5,30], 'X', [130,50], 5000);
     createBox([10,100,-140],[40,10,40]);
 
+    const leftBounds = createInvisibleBounds([340,45,-200],[5,100,290]); //kell mert a házra illesztett doboz valamiért el van csúszva
+    registerCollidableObject(leftBounds, TYPE_NORMAL);
     createSpikeField([440,0,-230], 30, 5); //2. pálya elemei
     createSpikeField([440,0,-173], 30, 5);
     createSpikeField([460,0,-210], 5, 30);
@@ -45,10 +47,17 @@ export function addObjects() {
     createBox([385,40,-370],[50,5,20]);
     createBox([440,40,-350],[20,5,50]);
     createMovingPlatform([440,40,-250],[20,5,30], 'Z', [-250,-300], 5000);
-    const roofBound = createInvisibleBounds([440,50,-200],[40,5,40]); //kapu teteje egyébként nincs benne
-    registerCollidableObject(roofBound, TYPE_NORMAL);
+    const smallRoofBound = createInvisibleBounds([440,50,-200],[40,5,40]); //kapu teteje egyébként nincs benne
+    registerCollidableObject(smallRoofBound, TYPE_NORMAL);
     createBox([440,60,-150],[40,5,40]);
     createHealingObject(440,10,-25);
+
+    createBox([440,80,-90],[40,5,40]); //tetőn lévő akadályok
+    const roofBound = createInvisibleBounds([370,90,-200],[70,10,290]);
+    registerCollidableObject(roofBound, TYPE_NORMAL);
+    createSpikeField([387,90,-153],60,15);
+    createBox([330,90,-153],[40,5,40]);
+    createMovingObstacle([330,120,-260],[10,50,40],'X',[330,430],5000);
 }
 
 /**
@@ -178,9 +187,7 @@ export function addModels() {
 
     loadModel('palace_of_culture', 2.5, [-300,75,-720], {boundsSize: [150,100,150], type: TYPE_LETHAL}); //háttér épületek
 
-    loadModel('ruined_house', 2.3, [400,45,-200], {boundsSize: [60,40,290], type: TYPE_NORMAL}); // 2. pálya
-    const leftBounds = createInvisibleBounds([340,45,-200],[5,100,290]); //kell mert a házra illesztett doboz valamiért el van csúszva
-    registerCollidableObject(leftBounds, TYPE_NORMAL);
+    loadModel('ruined_house', 2.3, [400,45,-200], {boundsSize: [60,60,300], type: TYPE_NORMAL}); // 2. pálya
     loadModel('radioactive_barrel',0.7, [410,0,-30], {boundsSize: [5,10,5],type: 'DAMAGE-100-STOP'});
     loadModel('radioactive_barrel',0.7, [360,0,-10], {boundsSize: [5,10,5],type: 'DAMAGE-100-STOP'});
 
@@ -275,6 +282,10 @@ export function addCoins() {
     createCoin(365,55,-372);
     createCoin(440,60,-200);
     createCoin(440,70,-150);
+    createCoin(387,105,-100); //háztetőn
+    createCoin(387,105,-192);
+    createCoin(330,105,-160);
+    createCoin(387,105,-300);
 
     document.getElementById('coinCounter').textContent = 'Érmék: 0/' + maximumCoins; //számoló szöveg inicializálása 
 }
