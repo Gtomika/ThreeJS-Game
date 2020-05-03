@@ -23,6 +23,13 @@ Ha erre a verzióra van szükség akkor:
 * git clone https://github.com/Gtomika/ThreeJS-Game.git (ha még nincs letöltve)
 * git checkout a7f8968f269df0154ebee2608933b4683c60044e (ez az utolsó április 5 előtti commit) 
 
+# II. mérföldkő (május 10)
+
+Egy összeállítást készítettem, ami mutatja, hogy milyen funkciókat akartam megvalósítani a II. mérföldkőre 
+és hogy ezek közül melyik sikerült. Ez is a GitHub repository-ban található:
+
+https://github.com/Gtomika/ThreeJS-Game/projects/1
+
 # Használat
 
 Web szerverrel kell használni, vagy a böngésző nem fogja betölteni a textúrákat.
